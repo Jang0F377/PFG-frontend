@@ -1,0 +1,22 @@
+networks:
+  pfg-network:
+    name: pfg_backend_pfg-network
+    external: true
+
+services:
+  pfg-frontend:
+    container_name: pfg-frontend
+    image: pfg-frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    command: npm run dev --host
+    networks:
+      - pfg-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 5173:5173
+    restart: unless-stopped
