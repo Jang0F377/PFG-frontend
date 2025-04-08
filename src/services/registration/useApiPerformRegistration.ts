@@ -9,12 +9,22 @@ interface PerformRegistrationRequest {
   favoriteGames?: string[];
 }
 
+interface PerformRegistrationResponse {
+  id: string;
+  email: string;
+  username: string;
+  favoriteGames: string[];
+  pfgSupporter: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const performRegistration = async (
   email: string,
   password: string,
   favoriteGames?: string[],
 ) => {
-  return http.post(
+  return http.post<PerformRegistrationResponse>(
     AppApiUrls.registerUser.route,
     {
       email,
@@ -29,7 +39,11 @@ export const performRegistration = async (
 };
 
 export const useApiPerformRegistration = () => {
-  return useMutation<any, AxiosError, PerformRegistrationRequest>({
+  return useMutation<
+    PerformRegistrationResponse,
+    AxiosError,
+    PerformRegistrationRequest
+  >({
     mutationFn: ({ email, password, favoriteGames }) =>
       performRegistration(email, password, favoriteGames),
   });
