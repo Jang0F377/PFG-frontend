@@ -9,14 +9,11 @@ interface PerformRegistrationRequest {
   favoriteGames?: string[];
 }
 
-interface PerformRegistrationResponse {
-  id: string;
-  email: string;
-  username: string;
-  favoriteGames: string[];
-  pfgSupporter: boolean;
-  createdAt: string;
-  updatedAt: string;
+export interface PerformRegistrationResponse {
+  data: {
+    accessToken: string;
+    refreshToken: string;
+  };
 }
 
 export const performRegistration = async (

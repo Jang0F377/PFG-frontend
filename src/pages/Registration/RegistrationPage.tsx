@@ -1,10 +1,14 @@
 import pfgLogo from '@assets/PFG-702-background.png';
 import SignUpForm from './components/SignUpForm';
-import { useApiPerformRegistration } from '@services/registration/useApiPerformRegistration';
+import {
+  PerformRegistrationResponse,
+  useApiPerformRegistration,
+} from '@services/registration/useApiPerformRegistration';
 import Spinner from '@pages/Loading/components/Spinner';
 import { useNavigate } from 'react-router-dom';
 import { urls } from '@common/utils/http/routeUrls';
 import { useState } from 'react';
+import { setIdToken, setRefreshToken } from '@common/utils/auth/tokens';
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -23,8 +27,10 @@ const RegistrationPage = () => {
         favoriteGames: data.favoriteGames,
       },
       {
-        onSuccess: () => {
-          navigate(urls.DASHBOARD.route);
+        onSuccess: ({ data }: PerformRegistrationResponse) => {
+          setIdToken(data.accessToken);
+          setRefreshToken(data.refreshToken);
+          navigate(urls.DASHBOARD.route, { replace: true });
         },
         onError: (error: any) => {
           setErrorMessage(

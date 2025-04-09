@@ -6,6 +6,8 @@ import LandingPage from './pages/Landing/LandingPage';
 import { urls } from '@common/utils/http/routeUrls';
 import LoginPage from './pages/Login/LoginPage';
 import RegistrationPage from './pages/Registration/RegistrationPage';
+import DashboardPage from './pages/Dashboard/DashboardPage';
+
 const IndexRoutes: FC = () => (
   <BrowserRouter>
     <Routes>
@@ -13,6 +15,7 @@ const IndexRoutes: FC = () => (
         <Route path={urls.LANDING.route} element={<LandingPage />} />
         <Route path={urls.REGISTRATION.route} element={<RegistrationPage />} />
         <Route path={urls.LOGIN.route} element={<LoginPage />} />
+        <Route path={urls.DASHBOARD.route} element={<DashboardPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </Routes>

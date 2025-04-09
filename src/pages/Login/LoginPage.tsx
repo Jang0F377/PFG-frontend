@@ -1,15 +1,33 @@
 import { urls } from '@common/utils/http/routeUrls';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import pfgLogo from '@assets/PFG-702-background.png';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import { useApiPerformLogin } from '@services/login/useApiPerformLogin';
 import Spinner from '@pages/Loading/components/Spinner';
+import {
+  clearTokens,
+  getIdToken,
+  isIdTokenExpired,
+} from '@common/utils/auth/tokens';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const { mutate: performLogin, isPending, isError } = useApiPerformLogin();
+  const accessToken = getIdToken();
+  const tokenExpired = isIdTokenExpired();
+
+  useEffect(() => {
+    if (accessToken) {
+      if (tokenExpired) {
+        console.log('token expired');
+        clearTokens(); // TODO: handle refresh token
+        return;
+      }
+      navigate(urls.DASHBOARD.route);
+    }
+  }, [accessToken]);
 
   const handleSubmit = (data: { email: string; password: string }) => {
     performLogin(
