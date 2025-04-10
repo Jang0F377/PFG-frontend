@@ -2,6 +2,7 @@ import { AppApiUrls } from '@common/utils/http/apiUrls';
 import { http } from '@common/utils/http/http';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { ApiResponse } from '@common/utils/http/types';
 
 interface PerformLoginRequest {
   email: string;
@@ -13,8 +14,10 @@ interface PerformLoginResponse {
   refreshToken: string;
 }
 
+export type PerformLoginResponseData = ApiResponse<PerformLoginResponse>;
+
 export const performLogin = async (email: string, password: string) => {
-  return http.post<PerformLoginResponse>(
+  return http.post<PerformLoginResponseData>(
     AppApiUrls.loginUser.route,
     {
       email,
@@ -28,7 +31,9 @@ export const performLogin = async (email: string, password: string) => {
 };
 
 export const useApiPerformLogin = () => {
-  return useMutation<PerformLoginResponse, AxiosError, PerformLoginRequest>({
-    mutationFn: ({ email, password }) => performLogin(email, password),
-  });
+  return useMutation<PerformLoginResponseData, AxiosError, PerformLoginRequest>(
+    {
+      mutationFn: ({ email, password }) => performLogin(email, password),
+    },
+  );
 };

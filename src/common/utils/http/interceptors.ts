@@ -1,14 +1,40 @@
 import {
+  AxiosHeaders,
   AxiosInstance,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
 import camelcaseKeys from 'camelcase-keys';
 import snakecaseKeys from 'snakecase-keys';
+import { getIdToken } from '../auth/tokens';
 
 export const registerInterceptors = (axios: AxiosInstance) => {
   axios.interceptors.response.use(snakeToCamelSerializer);
   axios.interceptors.request.use(camelToSnakeSerializer);
+  axios.interceptors.request.use(tokenAttacher);
+};
+
+const shouldIncludeAuthToken = (url?: string) => {
+  if (!url) return false;
+
+  const urlObj = new URL(url);
+  const path = urlObj.pathname;
+
+  return path.startsWith('/');
+};
+
+const tokenAttacher = (config: InternalAxiosRequestConfig) => {
+  const idToken = getIdToken();
+  if (idToken !== null && shouldIncludeAuthToken(config.url)) {
+    console.log('attaching token');
+    const headers = new AxiosHeaders(config.headers);
+    headers.set('Authorization', `Bearer ${idToken}`);
+    return {
+      ...config,
+      headers,
+    };
+  }
+  return config;
 };
 
 export const camelToSnakeSerializer = (config: InternalAxiosRequestConfig) => {

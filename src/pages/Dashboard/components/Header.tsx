@@ -12,10 +12,10 @@ import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { Link, useNavigate } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
-import { HeaderDashboardNavLinks } from './NavLinks';
 import { urls } from '@common/utils/http/routeUrls';
 import CustomAvatar from '@common/components/Avatar';
 import pfgLogo from '@assets/PFG-702-background.png';
+import { clearTokens } from '@common/utils/auth/tokens';
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
@@ -27,16 +27,19 @@ const DashboardHeader = () => {
     ['Account', '/account'],
   ];
 
-  const handleSignOut = async () => {};
+  const handleSignOut = async () => {
+    clearTokens();
+    navigate(urls.LANDING.route);
+  };
 
   return (
     <>
-      <Disclosure as="nav" className="bg-neon-blue-50 w-full">
+      <Disclosure as="nav" className="w-full">
         {({ open }) => (
           <>
-            <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl">
               <div>
-                <div className="flex h-16 items-center justify-between px-4 sm:px-0">
+                <div className="flex h-16 items-center justify-between px-2">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <Link to={urls.DASHBOARD.route} aria-label="Home">
@@ -47,20 +50,13 @@ const DashboardHeader = () => {
                         />
                       </Link>
                     </div>
-                    <div className="hidden md:mx-auto md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
-                        <div className="hidden items-center md:flex md:gap-x-14">
-                          <HeaderDashboardNavLinks />
-                        </div>
-                      </div>
-                    </div>
                   </div>
                   <div className="hidden items-center md:block">
                     <div className="ml-4 flex items-center md:ml-6">
                       {/* Profile dropdown */}
                       <Menu as="div" className="relative ml-3">
                         <div className="items-center">
-                          <MenuButton className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm">
+                          <MenuButton className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm hover:cursor-pointer">
                             <span className="sr-only">Open user menu</span>
                             <CustomAvatar email={'MG'} size="md" />
                           </MenuButton>
@@ -75,25 +71,27 @@ const DashboardHeader = () => {
                           leaveTo="transform opacity-0 scale-95"
                         >
                           <MenuItems className="ring-opacity-5 absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black focus:outline-none">
+                            {navigation.map(([label, href], index) => (
+                              <MenuItem key={index}>
+                                {({ focus }) => (
+                                  <Link
+                                    to={href}
+                                    className={clsx(
+                                      focus ? 'bg-gray-100' : '',
+                                      'block px-4 py-2 text-sm text-gray-700',
+                                    )}
+                                  >
+                                    {label}
+                                  </Link>
+                                )}
+                              </MenuItem>
+                            ))}
                             <MenuItem>
-                              {({ active }) => (
-                                <a
-                                  href={'#'}
-                                  className={clsx(
-                                    active ? 'bg-gray-100' : '',
-                                    'block px-4 py-2 text-sm text-gray-700',
-                                  )}
-                                >
-                                  Settings
-                                </a>
-                              )}
-                            </MenuItem>
-                            <MenuItem>
-                              {({ active }) => (
+                              {({ focus }) => (
                                 <a
                                   onClick={handleSignOut}
                                   className={clsx(
-                                    active ? 'bg-gray-100' : '',
+                                    focus ? 'bg-gray-100' : '',
                                     'block cursor-pointer px-4 py-2 text-sm text-gray-700',
                                   )}
                                 >

@@ -1,5 +1,6 @@
 import { AppApiUrls } from '@common/utils/http/apiUrls';
 import { http } from '@common/utils/http/http';
+import { ApiResponse } from '@common/utils/http/types';
 import { useMutation } from '@tanstack/react-query';
 import { type AxiosError } from 'axios';
 
@@ -9,19 +10,22 @@ interface PerformRegistrationRequest {
   favoriteGames?: string[];
 }
 
-export interface PerformRegistrationResponse {
-  data: {
-    accessToken: string;
-    refreshToken: string;
-  };
+// Define the actual data shape
+interface RegistrationResponse {
+  accessToken: string;
+  refreshToken: string;
 }
+
+// Use ApiResponse to wrap the data with the standard API response format
+export type PerformRegistrationResponseData = ApiResponse<RegistrationResponse>;
 
 export const performRegistration = async (
   email: string,
   password: string,
   favoriteGames?: string[],
 ) => {
-  return http.post<PerformRegistrationResponse>(
+  // The http utility will return the full response including status, data, and meta
+  return http.post<PerformRegistrationResponseData>(
     AppApiUrls.registerUser.route,
     {
       email,
@@ -37,7 +41,7 @@ export const performRegistration = async (
 
 export const useApiPerformRegistration = () => {
   return useMutation<
-    PerformRegistrationResponse,
+    PerformRegistrationResponseData,
     AxiosError,
     PerformRegistrationRequest
   >({

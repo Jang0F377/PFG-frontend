@@ -6,4 +6,5 @@ export const _ApiUrls = {
   _baseUrl: APP_API_URL,
   registerUser: '/users/register',
   loginUser: '/users/login',
+  getCurrentUser: '/users/me',
 };

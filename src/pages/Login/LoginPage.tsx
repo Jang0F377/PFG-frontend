@@ -1,14 +1,19 @@
 import { urls } from '@common/utils/http/routeUrls';
 import { useEffect, useState } from 'react';
 import pfgLogo from '@assets/PFG-702-background.png';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
-import { useApiPerformLogin } from '@services/login/useApiPerformLogin';
+import {
+  PerformLoginResponseData,
+  useApiPerformLogin,
+} from '@services/login/useApiPerformLogin';
 import Spinner from '@pages/Loading/components/Spinner';
 import {
   clearTokens,
   getIdToken,
   isIdTokenExpired,
+  setIdToken,
+  setRefreshToken,
 } from '@common/utils/auth/tokens';
 
 const LoginPage = () => {
@@ -29,14 +34,16 @@ const LoginPage = () => {
     }
   }, [accessToken]);
 
-  const handleSubmit = (data: { email: string; password: string }) => {
+  const handleSubmit = (input: { email: string; password: string }) => {
     performLogin(
       {
-        email: data.email,
-        password: data.password,
+        email: input.email,
+        password: input.password,
       },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }: PerformLoginResponseData) => {
+          setIdToken(data.accessToken);
+          setRefreshToken(data.refreshToken);
           navigate(urls.DASHBOARD.route);
         },
         onError: (error: any) => {

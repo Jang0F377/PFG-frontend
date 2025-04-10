@@ -1,7 +1,7 @@
 import pfgLogo from '@assets/PFG-702-background.png';
 import SignUpForm from './components/SignUpForm';
 import {
-  PerformRegistrationResponse,
+  PerformRegistrationResponseData,
   useApiPerformRegistration,
 } from '@services/registration/useApiPerformRegistration';
 import Spinner from '@pages/Loading/components/Spinner';
@@ -19,15 +19,19 @@ const RegistrationPage = () => {
     isError,
   } = useApiPerformRegistration();
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (input: {
+    email: string;
+    password: string;
+    favoriteGames: string[];
+  }) => {
     performRegistration(
       {
-        email: data.email,
-        password: data.password,
-        favoriteGames: data.favoriteGames,
+        email: input.email,
+        password: input.password,
+        favoriteGames: input.favoriteGames,
       },
       {
-        onSuccess: ({ data }: PerformRegistrationResponse) => {
+        onSuccess: ({ data }: PerformRegistrationResponseData) => {
           setIdToken(data.accessToken);
           setRefreshToken(data.refreshToken);
           navigate(urls.DASHBOARD.route, { replace: true });

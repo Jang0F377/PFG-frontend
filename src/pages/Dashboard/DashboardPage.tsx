@@ -6,8 +6,24 @@ import {
 } from '@heroicons/react/24/outline';
 import Friends from './components/Friends';
 import DashboardHeader from './components/Header';
+import { DashboardPageFooter } from './components/Footer';
+import { useApiGetCurrentUser } from '@services/dashboard/userApiGetCurrentUser';
+import LoadingPage from '@pages/Loading/Loading';
+import ErrorPage from '@pages/Error/ErrorPage';
 
 const DashboardPage = () => {
+  const { data: getCurrentUser, isLoading, isError } = useApiGetCurrentUser();
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (isError) {
+    return <ErrorPage />;
+  }
+
+  console.log('getCurrentUser', getCurrentUser);
+
   return (
     <>
       <DashboardHeader />
@@ -93,6 +109,7 @@ const DashboardPage = () => {
           </section>
         </main>
       </div>
+      <DashboardPageFooter />
     </>
   );
 };
