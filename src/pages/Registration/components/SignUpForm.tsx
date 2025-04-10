@@ -2,7 +2,7 @@ import Button from '@common/components/Button';
 import { urls } from '@common/utils/http/routeUrls';
 import { useForm } from '@tanstack/react-form';
 
-interface SignUpFormOptions {
+export interface SignUpFormOptions {
   email: string;
   password: string;
   confirmPassword: string;
@@ -10,7 +10,7 @@ interface SignUpFormOptions {
 }
 
 interface SignUpFormProps {
-  handleSubmit: (data: SignUpFormOptions) => void;
+  handleSubmit: (input: SignUpFormOptions) => void;
 }
 
 const SignUpForm = ({ handleSubmit }: SignUpFormProps) => {

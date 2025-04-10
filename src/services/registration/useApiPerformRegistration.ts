@@ -10,13 +10,11 @@ interface PerformRegistrationRequest {
   favoriteGames?: string[];
 }
 
-// Define the actual data shape
 interface RegistrationResponse {
   accessToken: string;
   refreshToken: string;
 }
 
-// Use ApiResponse to wrap the data with the standard API response format
 export type PerformRegistrationResponseData = ApiResponse<RegistrationResponse>;
 
 export const performRegistration = async (
@@ -24,7 +22,6 @@ export const performRegistration = async (
   password: string,
   favoriteGames?: string[],
 ) => {
-  // The http utility will return the full response including status, data, and meta
   return http.post<PerformRegistrationResponseData>(
     AppApiUrls.registerUser.route,
     {

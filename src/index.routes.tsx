@@ -7,6 +7,7 @@ import { urls } from '@common/utils/http/routeUrls';
 import LoginPage from './pages/Login/LoginPage';
 import RegistrationPage from './pages/Registration/RegistrationPage';
 import DashboardPage from './pages/Dashboard/DashboardPage';
+import AccountPage from '@pages/Account/AccountPage';
 
 const IndexRoutes: FC = () => (
   <BrowserRouter>
@@ -16,6 +17,7 @@ const IndexRoutes: FC = () => (
         <Route path={urls.REGISTRATION.route} element={<RegistrationPage />} />
         <Route path={urls.LOGIN.route} element={<LoginPage />} />
         <Route path={urls.DASHBOARD.route} element={<DashboardPage />} />
+        <Route path={urls.ACCOUNT.route} element={<AccountPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </Routes>

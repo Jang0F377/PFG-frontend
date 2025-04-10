@@ -1,6 +1,7 @@
+import { getUserId } from '@common/utils/auth/getUserId';
 import { AppApiUrls } from '@common/utils/http/apiUrls';
 import { http } from '@common/utils/http/http';
-import { ApiData } from '@common/utils/http/types';
+import { ApiResponse } from '@common/utils/http/types';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
@@ -18,7 +19,7 @@ export interface GetCurrentUserResponse {
   seshInvites: [];
 }
 
-export type GetCurrentUserResponseData = ApiData<GetCurrentUserResponse>;
+export type GetCurrentUserResponseData = ApiResponse<GetCurrentUserResponse>;
 
 export const getCurrentUser = async () => {
   return http.get<GetCurrentUserResponseData>(
@@ -35,6 +36,7 @@ export const useApiGetCurrentUser = () => {
   return useQuery<GetCurrentUserResponseData, AxiosError>({
     queryKey: useApiGetCurrentUser.getKey(),
     queryFn: getCurrentUser,
+    enabled: !!getUserId(),
   });
 };
-useApiGetCurrentUser.getKey = () => ['getCurrentUser'];
+useApiGetCurrentUser.getKey = () => ['getCurrentUser', getUserId()];

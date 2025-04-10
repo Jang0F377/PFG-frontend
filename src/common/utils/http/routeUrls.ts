@@ -5,6 +5,7 @@ export const routeUrls = {
   LOGIN: '/login',
   REGISTRATION: '/registration',
   DASHBOARD: '/dashboard',
+  ACCOUNT: '/account',
 };
 
 type urlProxy<T> = Record<

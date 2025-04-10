@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import { type AxiosError } from 'axios';
 
-const QUERY_STALE_TIME = 1000 * 60;
+const QUERY_STALE_TIME = 1000 * 60 * 10; // 10 minutes in milliseconds
 
 export const queryClient = new QueryClient({
   defaultOptions: {

@@ -6,15 +6,11 @@ import { urls } from '@common/utils/http/routeUrls';
 export const DashboardPageFooter = () => {
   return (
     <footer className="bg-neon-blue-600 w-full">
-      <Container className="">
+      <Container>
         <Link to={urls.DASHBOARD.route} className="rounded-xl">
-          <img
-            src={pfgLogo}
-            alt="ERR"
-            className="mx-auto h-22 w-auto rounded-full object-cover"
-          />
+          <img src={pfgLogo} alt="ERR" className="mx-auto h-22 w-auto" />
         </Link>
-        <div className="flex flex-col items-center py-1 sm:flex-row-reverse sm:justify-between">
+        <div className="pb-1 text-end">
           <p className="text-sm text-blue-50">
             Copyright &copy; {new Date().getFullYear()} PreFireGaming. All
             rights reserved.

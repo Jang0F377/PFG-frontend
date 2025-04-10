@@ -1,5 +1,4 @@
 // import { type AxiosError } from 'axios';
-// import { assign, fromPromise, PromiseActorLogic, setup } from 'xstate';
 
 // export type RegistrationEvent =
 //   | { type: 'ERROR' }

@@ -1,5 +1,5 @@
 import pfgLogo from '@assets/PFG-702-background.png';
-import SignUpForm from './components/SignUpForm';
+import SignUpForm, { SignUpFormOptions } from './components/SignUpForm';
 import {
   PerformRegistrationResponseData,
   useApiPerformRegistration,
@@ -10,6 +10,11 @@ import { urls } from '@common/utils/http/routeUrls';
 import { useState } from 'react';
 import { setIdToken, setRefreshToken } from '@common/utils/auth/tokens';
 
+type SignUpFormSubmission = Pick<
+  SignUpFormOptions,
+  'email' | 'password' | 'favoriteGames'
+>;
+
 const RegistrationPage = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -19,11 +24,7 @@ const RegistrationPage = () => {
     isError,
   } = useApiPerformRegistration();
 
-  const handleSubmit = (input: {
-    email: string;
-    password: string;
-    favoriteGames: string[];
-  }) => {
+  const handleSubmit = (input: SignUpFormSubmission) => {
     performRegistration(
       {
         email: input.email,
