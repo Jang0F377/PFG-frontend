@@ -23,7 +23,7 @@ const DashboardHeader = () => {
     ['Dashboard', '/dashboard'],
     ['Friends', '/dashboard#friends'],
     ['Users', '/users'],
-    ['Support PFG', '/support'],
+    ['Support PFG', '/support-pfg'],
     ['Account', '/account'],
   ];
 

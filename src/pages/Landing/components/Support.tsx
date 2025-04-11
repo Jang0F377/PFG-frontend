@@ -216,7 +216,7 @@ function Support() {
     <section
       id="support"
       aria-labelledby="pricing-title"
-      className="bg-neon-blue-800 border-t border-gray-200 py-20"
+      className="bg-neon-blue-800 w-full border-t border-gray-200 py-20"
     >
       <Container className="">
         <div className="mx-auto max-w-2xl text-center">

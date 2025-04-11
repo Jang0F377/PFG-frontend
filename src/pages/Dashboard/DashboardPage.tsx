@@ -10,8 +10,10 @@ import { DashboardPageFooter } from './components/Footer';
 import { useApiGetCurrentUser } from '@services/dashboard/userApiGetCurrentUser';
 import LoadingPage from '@pages/Loading/Loading';
 import ErrorPage from '@pages/Error/ErrorPage';
+import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
 
 const DashboardPage = () => {
+  const isAuthed = getIsAuthed();
   const { data: getCurrentUser, isLoading, isError } = useApiGetCurrentUser();
 
   if (isLoading) {
@@ -20,6 +22,16 @@ const DashboardPage = () => {
 
   if (isError) {
     return <ErrorPage />;
+  }
+
+  if (!isAuthed) {
+    return (
+      <ErrorPage
+        code={401}
+        message="Unauthorized"
+        extraMessage="Please log in to view this page."
+      />
+    );
   }
 
   return (

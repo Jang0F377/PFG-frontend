@@ -1,4 +1,4 @@
-import { isIdTokenExpired } from '@common/utils/auth/tokens';
+import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -22,7 +22,7 @@ const ErrorPage: FC<ErrorPageProps> = ({
   extraMessage = DEFAULT_ERROR.extraMessage,
   linkTo = DEFAULT_ERROR.linkTo,
 }) => {
-  const isAuthed = !isIdTokenExpired(); // This will return true if the token is expired
+  const isAuthed = getIsAuthed();
 
   if (isAuthed) {
     linkTo = '/dashboard';

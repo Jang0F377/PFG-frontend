@@ -1,38 +1,26 @@
 import { urls } from '@common/utils/http/routeUrls';
 import { useEffect, useState } from 'react';
 import pfgLogo from '@assets/PFG-702-background.png';
-import { data, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import {
   PerformLoginResponseData,
   useApiPerformLogin,
 } from '@services/login/useApiPerformLogin';
 import Spinner from '@pages/Loading/components/Spinner';
-import {
-  clearTokens,
-  getIdToken,
-  isIdTokenExpired,
-  setIdToken,
-  setRefreshToken,
-} from '@common/utils/auth/tokens';
-
+import { setIdToken, setRefreshToken } from '@common/utils/auth/tokens';
+import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
 const LoginPage = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const { mutate: performLogin, isPending, isError } = useApiPerformLogin();
-  const accessToken = getIdToken();
-  const tokenExpired = isIdTokenExpired();
+  const isAuthed = getIsAuthed();
 
   useEffect(() => {
-    if (accessToken) {
-      if (tokenExpired) {
-        console.log('token expired');
-        clearTokens(); // TODO: handle refresh token
-        return;
-      }
+    if (isAuthed) {
       navigate(urls.DASHBOARD.route);
     }
-  }, [accessToken]);
+  }, [isAuthed]);
 
   const handleSubmit = (input: { email: string; password: string }) => {
     performLogin(

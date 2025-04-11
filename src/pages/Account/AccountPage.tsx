@@ -11,8 +11,9 @@ import { DashboardPageFooter } from '@pages/Dashboard/components/Footer';
 import { accountMachine } from './accountMachine';
 import AccountForm, { AccountFormOptions } from './components/AccountForm';
 import { useApiUpdateUserAccount } from '@services/account/useApiUpdateUserAccount';
-
+import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
 const AccountPage = () => {
+  const isAuthed = getIsAuthed();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { mutate: updateUserAccount, isError: isUpdateUserAccountError } =
@@ -75,8 +76,18 @@ const AccountPage = () => {
     return <LoadingPage />;
   }
 
-  if (isError || !userData) {
+  if (isError) {
     return <ErrorPage />;
+  }
+
+  if (!isAuthed || !userData) {
+    return (
+      <ErrorPage
+        code={401}
+        message="Unauthorized"
+        extraMessage="Please log in to view this page."
+      />
+    );
   }
 
   return (

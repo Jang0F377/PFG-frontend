@@ -26,19 +26,13 @@ export const clearTokens = () => {
   localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
-export const getIdTokenExpiry = () => {
-  const token = getIdToken();
-  const tokenData = parseJwt(token);
-  return tokenData?.exp || -1;
-};
-
-export const getSecondsTillIdTokenExpires = () => {
+export const getSecondsTillIdTokenExpires = (token: string) => {
   const timeInMs = new Date().getTime();
   const currentTimeInSeconds = timeInMs / 1000;
-  const idTokenExpiry = getIdTokenExpiry();
+  const idTokenExpiry = parseJwt(token)?.exp || -1;
   return idTokenExpiry - currentTimeInSeconds;
 };
 
-export const isIdTokenExpired = () => {
-  return getSecondsTillIdTokenExpires() <= 0;
+export const isIdTokenExpired = (token: string) => {
+  return getSecondsTillIdTokenExpires(token) <= 0;
 };
