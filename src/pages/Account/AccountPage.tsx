@@ -6,31 +6,18 @@ import { useNavigate } from 'react-router-dom';
 import DashboardHeader from '@pages/Dashboard/components/Header';
 import LoadingPage from '@pages/Loading/Loading';
 import ErrorPage from '@pages/Error/ErrorPage';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AppApiUrls } from '@common/utils/http/apiUrls';
-import { http } from '@common/utils/http/http';
-import { ApiResponse } from '@common/utils/http/types';
+import { useQueryClient } from '@tanstack/react-query';
 import { DashboardPageFooter } from '@pages/Dashboard/components/Footer';
 import { accountMachine } from './accountMachine';
 import AccountForm, { AccountFormOptions } from './components/AccountForm';
-
-interface UpdateUserData {
-  email?: string;
-  username?: string;
-  favoriteGames?: string[];
-}
-
-// API response for updating user
-type UpdateUserResponse = ApiResponse<{
-  id: string;
-  email: string;
-  username?: string;
-  favoriteGames?: string[];
-}>;
+import { useApiUpdateUserAccount } from '@services/account/useApiUpdateUserAccount';
 
 const AccountPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { mutate: updateUserAccount, isError: isUpdateUserAccountError } =
+    useApiUpdateUserAccount();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [state, send] = useMachine(accountMachine);
   // Leverage React Query's cache - this won't make a new network request
@@ -55,8 +42,21 @@ const AccountPage = () => {
 
   // Handle form submission
   const handleSubmit = (input: AccountFormOptions) => {
-    console.log(input);
-    // TODO: Add mutation
+    updateUserAccount(input, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: useApiGetCurrentUser.getKey(),
+        });
+        send({ type: 'DONE_EDITING' });
+      },
+      onError: (error: any) => {
+        send({ type: 'CANCEL_EDITING' });
+        setErrorMessage(
+          error?.response?.data?.detail?.message ||
+            'An error occurred, please try again.',
+        );
+      },
+    });
   };
 
   // Handle adding a game to favorite games
@@ -162,15 +162,11 @@ const AccountPage = () => {
                     )}
                   </div>
                 </div>
-
-                {/* <div className="pt-4">
-                  <Button
-                    onClick={() => navigate(-1)}
-                    className="bg-gray-200 text-gray-800 hover:bg-gray-300"
-                  >
-                    Back to Dashboard
-                  </Button>
-                </div> */}
+                {isUpdateUserAccountError && (
+                  <div>
+                    <p className="text-center text-red-700">{errorMessage}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -51,7 +51,6 @@ const AccountForm = ({
                   type="email"
                   placeholder={defaultValues.email}
                   name={field.name}
-                  value={field.state.value}
                   onChange={(e) => {
                     field.handleChange(e.target.value);
                   }}
@@ -82,7 +81,6 @@ const AccountForm = ({
                   type="text"
                   placeholder={defaultValues.username}
                   name={field.name}
-                  value={field.state.value}
                   onChange={(e) => {
                     field.handleChange(e.target.value);
                   }}
@@ -101,37 +99,71 @@ const AccountForm = ({
           {(field) => {
             return (
               <div className="max-w-xl">
-                {field.state.value?.map((_, i) => {
-                  return (
-                    <accountForm.Field key={i} name={`favoriteGames[${i}]`}>
-                      {(subField) => {
-                        return (
-                          <div className="max-w-xl">
-                            <label
-                              htmlFor={subField.name}
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Favorite Game {i + 1}
-                            </label>
-                            <div className="mt-1">
-                              <input
-                                id={subField.name}
-                                type="text"
-                                placeholder={defaultValues.favoriteGames?.[i]}
-                                name={subField.name}
-                                value={subField.state.value}
-                                onChange={(e) => {
-                                  subField.handleChange(e.target.value);
-                                }}
-                                className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
-                              />
-                            </div>
-                          </div>
-                        );
-                      }}
-                    </accountForm.Field>
-                  );
-                })}
+                {defaultValues.favoriteGames?.length
+                  ? field.state.value?.map((_, i) => {
+                      return (
+                        <accountForm.Field key={i} name={`favoriteGames[${i}]`}>
+                          {(subField) => {
+                            return (
+                              <div className="max-w-xl">
+                                <label
+                                  htmlFor={subField.name}
+                                  className="block text-sm font-medium text-gray-700"
+                                >
+                                  Favorite Game {i + 1}
+                                </label>
+                                <div className="mt-1">
+                                  <input
+                                    id={subField.name}
+                                    type="text"
+                                    placeholder={
+                                      defaultValues.favoriteGames?.[i]
+                                    }
+                                    name={subField.name}
+                                    onChange={(e) => {
+                                      subField.handleChange(e.target.value);
+                                    }}
+                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                                  />
+                                </div>
+                              </div>
+                            );
+                          }}
+                        </accountForm.Field>
+                      );
+                    })
+                  : [0, 1, 2].map((_, i) => {
+                      return (
+                        <accountForm.Field key={i} name={`favoriteGames[${i}]`}>
+                          {(subField) => {
+                            return (
+                              <div className="max-w-xl">
+                                <label
+                                  htmlFor={subField.name}
+                                  className="block text-sm font-medium text-gray-700"
+                                >
+                                  Favorite Game {i + 1}
+                                </label>
+                                <div className="mt-1">
+                                  <input
+                                    id={subField.name}
+                                    type="text"
+                                    placeholder={
+                                      defaultValues.favoriteGames?.[i]
+                                    }
+                                    name={subField.name}
+                                    onChange={(e) => {
+                                      subField.handleChange(e.target.value);
+                                    }}
+                                    className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                                  />
+                                </div>
+                              </div>
+                            );
+                          }}
+                        </accountForm.Field>
+                      );
+                    })}
               </div>
             );
           }}

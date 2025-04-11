@@ -13,6 +13,7 @@ export interface GetCurrentUserResponse {
   role: string;
   createdAt: string;
   updatedAt: string;
+  pfgSupporter: boolean;
   friendRequests: [];
   friends: [];
   upcomingCreatedSeshes: [];
@@ -23,7 +24,7 @@ export type GetCurrentUserResponseData = ApiResponse<GetCurrentUserResponse>;
 
 export const getCurrentUser = async () => {
   return http.get<GetCurrentUserResponseData>(
-    AppApiUrls.getCurrentUser.route,
+    AppApiUrls.getCurrentUser.get(),
     {},
     {
       snakecaseData: true,

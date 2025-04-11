@@ -26,7 +26,6 @@ const shouldIncludeAuthToken = (url?: string) => {
 const tokenAttacher = (config: InternalAxiosRequestConfig) => {
   const idToken = getIdToken();
   if (idToken !== null && shouldIncludeAuthToken(config.url)) {
-    console.log('attaching token');
     const headers = new AxiosHeaders(config.headers);
     headers.set('Authorization', `Bearer ${idToken}`);
     return {

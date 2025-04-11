@@ -23,7 +23,7 @@ export const performRegistration = async (
   favoriteGames?: string[],
 ) => {
   return http.post<PerformRegistrationResponseData>(
-    AppApiUrls.registerUser.route,
+    AppApiUrls.registerUser.get(),
     {
       email,
       password,

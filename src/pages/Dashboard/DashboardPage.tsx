@@ -22,8 +22,6 @@ const DashboardPage = () => {
     return <ErrorPage />;
   }
 
-  console.log('getCurrentUser', getCurrentUser);
-
   return (
     <>
       <DashboardHeader />
