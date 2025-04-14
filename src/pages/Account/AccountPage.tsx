@@ -37,39 +37,21 @@ const AccountPage = () => {
     send({ type: 'DONE_EDITING' });
   };
 
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [favoriteGames, setFavoriteGames] = useState<string[]>([]);
-
   // Handle form submission
   const handleSubmit = (input: AccountFormOptions) => {
     updateUserAccount(input, {
       onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: useApiGetCurrentUser.getKey(),
-        });
-        send({ type: 'DONE_EDITING' });
+        queryClient.invalidateQueries();
+        handleDoneEditing();
       },
       onError: (error: any) => {
-        send({ type: 'CANCEL_EDITING' });
+        handleCancelEditing();
         setErrorMessage(
           error?.response?.data?.detail?.message ||
             'An error occurred, please try again.',
         );
       },
     });
-  };
-
-  // Handle adding a game to favorite games
-  const handleAddGame = (game: string) => {
-    if (game && !favoriteGames.includes(game)) {
-      setFavoriteGames([...favoriteGames, game]);
-    }
-  };
-
-  // Handle removing a game from favorite games
-  const handleRemoveGame = (game: string) => {
-    setFavoriteGames(favoriteGames.filter((g) => g !== game));
   };
 
   if (isLoading) {

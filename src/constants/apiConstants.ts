@@ -9,4 +9,5 @@ export const _ApiUrls = {
   loginUser: '/users/login',
   getCurrentUser: '/users/me',
   updateUserAccount: '/users/:userId',
+  getAllUsers: '/users',
 };

@@ -3,7 +3,7 @@ import { AppApiUrls } from '@common/utils/http/apiUrls';
 import { http } from '@common/utils/http/http';
 import { ApiResponse } from '@common/utils/http/types';
 import { useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import { type AxiosError } from 'axios';
 
 export interface GetCurrentUserResponse {
   id: string;

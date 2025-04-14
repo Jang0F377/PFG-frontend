@@ -16,6 +16,7 @@ import { urls } from '@common/utils/http/routeUrls';
 import CustomAvatar from '@common/components/Avatar';
 import pfgLogo from '@assets/PFG-702-background.png';
 import { clearTokens } from '@common/utils/auth/tokens';
+import { getUserId } from '@common/utils/auth/getUserId';
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
@@ -140,7 +141,7 @@ const DashboardHeader = () => {
               <div className="border-t border-gray-700 pt-4 pb-3">
                 <div className="flex items-center px-5">
                   <div className="flex-shrink-0">
-                    <CustomAvatar email={'MG'} size="md" />
+                    <CustomAvatar email={getUserId()} size="md" />
                   </div>
                   <div className="ml-3 space-y-1">
                     <div className="text-neon-blue-tone-300 text-xs leading-none font-medium">

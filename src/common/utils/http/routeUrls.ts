@@ -7,6 +7,7 @@ export const routeUrls = {
   DASHBOARD: '/dashboard',
   ACCOUNT: '/account',
   SUPPORT_US: '/support-pfg',
+  ALL_USERS: '/users',
 };
 
 type urlProxy<T> = Record<

@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { urls } from '@common/utils/http/routeUrls';
 import { useState } from 'react';
 import { setIdToken, setRefreshToken } from '@common/utils/auth/tokens';
+import { useQueryClient } from '@tanstack/react-query';
 
 type SignUpFormSubmission = Pick<
   SignUpFormOptions,
@@ -17,6 +18,7 @@ type SignUpFormSubmission = Pick<
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const {
     mutate: performRegistration,
@@ -33,6 +35,7 @@ const RegistrationPage = () => {
       },
       {
         onSuccess: ({ data }: PerformRegistrationResponseData) => {
+          queryClient.invalidateQueries();
           setIdToken(data.accessToken);
           setRefreshToken(data.refreshToken);
           navigate(urls.DASHBOARD.route, { replace: true });

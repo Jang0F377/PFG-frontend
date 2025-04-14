@@ -20,20 +20,18 @@ const DashboardPage = () => {
     return <LoadingPage />;
   }
 
-  if (isError) {
-    return <ErrorPage />;
-  }
-
-  if (!isAuthed) {
-    return (
+  if (isError || !isAuthed) {
+    return !isAuthed ? (
       <ErrorPage
         code={401}
         message="Unauthorized"
         extraMessage="Please log in to view this page."
       />
+    ) : (
+      <ErrorPage />
     );
   }
-
+  console.log(getCurrentUser);
   return (
     <>
       <DashboardHeader />
