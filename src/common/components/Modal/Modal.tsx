@@ -13,7 +13,7 @@ import {
 import LoadingPage from '../../../pages/Loading/Loading';
 import { useMachine } from '@xstate/react';
 import { ModalInput, modalMachine } from './modalMachine';
-import { NewSeshForm } from './NewSeshForm';
+import { NewSeshForm, NewSeshSubmissionOptions } from './NewSeshForm';
 import { fromPromise } from 'xstate';
 
 /**
@@ -58,11 +58,6 @@ interface ModalProps {
   successMessage?: string;
 
   /**
-   * Error message to show when status is 'error'
-   */
-  errorMessage?: string;
-
-  /**
    * Loading message to show when status is 'loading'
    */
   loadingMessage?: string;
@@ -89,17 +84,28 @@ const Modal = ({
   intent = 'createSesh',
   status = 'idle',
   successMessage = 'Operation completed successfully',
-  errorMessage = 'An error occurred',
   loadingMessage = 'Loading...',
   onStatusClose,
   panelClassName = 'sm:max-w-xl',
 }: ModalProps) => {
-  // Prevent the modal from closing when in loading state
-  const handleClose = status === 'loading' ? () => {} : onClose;
-
   // Determine if we need to show status content instead of normal content
   const showStatusContent = status !== 'idle';
   const [recipients, setRecipients] = useState<string[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const handleSubmit = (input: NewSeshSubmissionOptions) => {
+    if (recipients.length == 0) {
+      setErrorMessage('Please add at least one recipient');
+      return;
+    }
+    console.log('handleSubmit', input);
+  };
+
+  // Prevent the modal from closing when in loading state
+  const handleClose = () => {
+    setErrorMessage(null);
+    setRecipients([]);
+    onClose();
+  };
 
   const [state, send] = useMachine(modalMachine, {
     input: {
@@ -195,7 +201,7 @@ const Modal = ({
                     )}
                   </div>
                 ) : (
-                  <div className="z-20 mx-1 flex-col rounded-lg md:mx-auto lg:relative lg:w-[490px]">
+                  <div className="z-20 mx-1 flex-col rounded-lg md:mx-auto">
                     <section className="bg-neon-blue-100 space-y-6 rounded-t-lg px-1.5 py-3">
                       <div>
                         <h3 className="text-neon-blue-900 text-base leading-6 font-medium md:text-lg">
@@ -207,50 +213,52 @@ const Modal = ({
                           </p>
                         )}
                       </div>
-                      {recipients.length > 0 && (
-                        <div className="bg-neon-blue-100 space-y-1 rounded-t-lg px-1 py-2">
-                          <h3 className="text-neon-blue-900 text-sm leading-6 font-medium">
-                            Recipients
-                          </h3>
-                          <ul>
-                            {recipients.map((recipient) => (
-                              <li
-                                key={recipient}
-                                className="flex flex-row items-center justify-between"
-                              >
-                                <span className="text-sm">{recipient}</span>
-                                <MinusCircleIcon
-                                  onClick={() => {
-                                    // TODO: Remove recipient
-                                  }}
-                                  className="h-4 w-4 text-red-500"
-                                />
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
                       {intent === 'createSesh' && (
-                        <NewSeshForm
-                          handleAddValidRecipient={(recipient) => {
-                            setRecipients([...recipients, recipient]);
-                            send({ type: 'ADD_RECIPIENT', payload: recipient });
-                          }}
-                          handleSubmit={() => {
-                            console.log('handleSubmit');
-                            send({ type: 'CREATE_SESH' });
-                          }}
-                          handleCancel={() => {}}
-                          defaultValues={{
-                            gameName: '',
-                            gameTime: '',
-                            gameDate: '',
-                          }}
-                          validatedRecipients={recipients}
-                        />
+                        <>
+                          {recipients.length > 0 && (
+                            <div className="bg-neon-blue-100 rounded-t-lg px-1 py-2">
+                              <h3 className="text-neon-blue-900 text-sm leading-6 font-medium underline">
+                                Recipients
+                              </h3>
+                              <ul>
+                                {recipients.map((recipient) => (
+                                  <li
+                                    key={recipient}
+                                    className="flex flex-row items-center justify-between"
+                                  >
+                                    <span className="text-sm">{recipient}</span>
+                                    <MinusCircleIcon
+                                      onClick={() => {
+                                        // TODO: Remove recipient
+                                      }}
+                                      className="h-4 w-4 text-red-500"
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          <NewSeshForm
+                            handleAddValidRecipient={(recipient) => {
+                              setRecipients([...recipients, recipient]);
+                              send({
+                                type: 'ADD_RECIPIENT',
+                                payload: recipient,
+                              });
+                            }}
+                            handleSubmit={handleSubmit}
+                            handleCancel={handleClose}
+                            defaultValues={{
+                              recipients,
+                              gameName: '',
+                              gameTime: '',
+                              gameDate: '',
+                            }}
+                            validatedRecipients={recipients}
+                          />
+                        </>
                       )}
                     </section>
-                    <hr className="border-neon-blue-700 w-full" />
                   </div>
                 )}
               </DialogPanel>

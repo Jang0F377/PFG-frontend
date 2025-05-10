@@ -8,6 +8,10 @@ import clsx from 'clsx';
 import Button from '../Button';
 import { useEffect, useState } from 'react';
 
+export interface NewSeshSubmissionOptions extends NewSeshFormOptions {
+  recipients: string[];
+}
+
 export interface NewSeshFormOptions {
   gameName: string;
   gameTime: string;
@@ -16,9 +20,9 @@ export interface NewSeshFormOptions {
 }
 
 export interface NewSeshFormProps {
-  handleSubmit: () => void;
+  handleSubmit: (input: NewSeshSubmissionOptions) => void;
   handleCancel: () => void;
-  defaultValues: NewSeshFormOptions;
+  defaultValues: NewSeshSubmissionOptions;
   handleAddValidRecipient: (recipientId: string) => void;
   validatedRecipients: string[];
 }
@@ -61,12 +65,44 @@ export const NewSeshForm = ({
 
   const newSeshForm = useForm({
     defaultValues,
-    onSubmit: () => {
-      console.log('onSubmit');
-      handleSubmit();
+    onSubmit: ({ value }) => {
+      console.log('onSubmit', value);
+      handleSubmit(value);
     },
-    validators: {},
+    validators: {
+      onSubmit: ({ value }) => {
+        if (!value.gameName) {
+          return {
+            fields: {
+              gameName: 'Game name is required',
+            },
+          };
+        }
+        if (!value.gameDate) {
+          return {
+            fields: {
+              gameDate: 'Game date is required',
+            },
+          };
+        }
+        if (!value.gameTime) {
+          return {
+            fields: {
+              gameTime: 'Game time is required',
+            },
+          };
+        }
+        return null;
+      },
+    },
   });
+
+  const handleClose = () => {
+    setErrorMessage(null);
+    setAddRecipientError(false);
+    newSeshForm.reset();
+    handleCancel();
+  };
 
   useEffect(() => {
     if (addRecipientError) {
@@ -102,14 +138,160 @@ export const NewSeshForm = ({
           newSeshForm.handleSubmit();
         }}
       >
-        <newSeshForm.Subscribe
-          selector={(state) => [state.canSubmit]}
-          children={([canSubmit]) => (
-            <Button type="submit" disabled={!canSubmit}>
-              Create Sesh
-            </Button>
+        <newSeshForm.Field
+          name="gameName"
+          children={(field) => (
+            <div className="max-w-xl">
+              <label
+                htmlFor={field.name}
+                className="block text-sm font-medium text-gray-700"
+              >
+                Game
+              </label>
+              <div className="mt-1">
+                <input
+                  id={field.name}
+                  type="text"
+                  placeholder={defaultValues.gameName}
+                  name={field.name}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                  }}
+                  className="bg-neon-blue-50 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                />
+                {field.state.meta.errors.length > 0 ? (
+                  <em role="alert" className="text-red-500">
+                    {field.state.meta.errors.join(', ')}
+                  </em>
+                ) : null}
+              </div>
+            </div>
           )}
         />
+        <div className="flex flex-row gap-x-1 sm:justify-between sm:gap-0">
+          <newSeshForm.Field
+            name="gameDate"
+            children={(field) => (
+              <div className="max-w-xl">
+                <label
+                  htmlFor={field.name}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Date
+                </label>
+                <div className="mt-1">
+                  <input
+                    id={field.name}
+                    type="date"
+                    placeholder={defaultValues.gameDate}
+                    name={field.name}
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                    }}
+                    className="bg-neon-blue-50 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                  />
+                  {field.state.meta.errors.length > 0 ? (
+                    <em role="alert" className="text-red-500">
+                      {field.state.meta.errors.join(', ')}
+                    </em>
+                  ) : null}
+                </div>
+              </div>
+            )}
+          />
+          <newSeshForm.Field
+            name="gameTime"
+            children={(field) => (
+              <div className="max-w-xl">
+                <label
+                  htmlFor={field.name}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Time
+                </label>
+                <div className="mt-1">
+                  <input
+                    id={field.name}
+                    type="time"
+                    placeholder={defaultValues.gameTime}
+                    name={field.name}
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                    }}
+                    className="bg-neon-blue-50 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                  />
+                  {field.state.meta.errors.length > 0 ? (
+                    <em role="alert" className="text-red-500">
+                      {field.state.meta.errors.join(', ')}
+                    </em>
+                  ) : null}
+                </div>
+              </div>
+            )}
+          />
+        </div>
+        <newSeshForm.Field
+          name="gameNotes"
+          children={(field) => (
+            <div className="max-w-xl">
+              <label
+                htmlFor={field.name}
+                className="block text-sm font-medium text-gray-700"
+              >
+                Notes
+              </label>
+              <div className="mt-1">
+                <textarea
+                  id={field.name}
+                  placeholder={defaultValues.gameNotes ?? ''}
+                  name={field.name}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                  }}
+                  className="bg-neon-blue-50 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+                />
+                {field.state.meta.errors.length > 0 ? (
+                  <em role="alert" className="text-red-500">
+                    {field.state.meta.errors.join(', ')}
+                  </em>
+                ) : null}
+              </div>
+            </div>
+          )}
+        />
+        <newSeshForm.Subscribe
+          selector={(state) => [state.errorMap]}
+          children={([errorMap]) =>
+            errorMap.onSubmit ? (
+              <div>
+                <em>There was an error on the form: {errorMap.onSubmit}</em>
+              </div>
+            ) : null
+          }
+        />
+        <div className="flex flex-row justify-between">
+          <newSeshForm.Subscribe
+            selector={(state) => [state.canSubmit]}
+            children={([canSubmit]) => (
+              <Button type="submit" disabled={!canSubmit} className="mt-3">
+                Create Sesh
+              </Button>
+            )}
+          />
+          <newSeshForm.Subscribe
+            selector={(state) => [state.isSubmitting]}
+            children={([isSubmitting]) => (
+              <Button
+                type="button"
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="mt-3 hover:bg-red-600"
+              >
+                {isSubmitting ? '...' : 'Cancel'}
+              </Button>
+            )}
+          />
+        </div>
       </form>
     </>
   );
@@ -165,72 +347,73 @@ const NewSeshAddRecipientForm = ({
   });
 
   return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          newSeshAddRecipientForm.handleSubmit();
-        }}
-      >
-        <newSeshAddRecipientForm.Field
-          name="recipientEmail"
-          children={(field) => (
-            <div className="max-w-xl">
-              <label
-                htmlFor={field.name}
-                className="block text-sm font-medium text-gray-700"
-              >
-                Recipient Email
-              </label>
-              <div className="mt-1 flex flex-row items-center justify-between space-x-2">
-                <input
-                  id={field.name}
-                  type="email"
-                  placeholder={defaultValues.recipientEmail}
-                  name={field.name}
-                  onChange={(e) => {
-                    field.handleChange(e.target.value);
-                  }}
-                  className="bg-neon-blue-50 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
-                />
-                <newSeshAddRecipientForm.Subscribe
-                  selector={(state) => [state.canSubmit]}
-                  children={([canSubmit]) => (
-                    <button type="submit" disabled={!canSubmit}>
-                      <PlusCircleIcon
-                        className={clsx(
-                          'flex h-7 w-7 cursor-pointer justify-end text-right hover:text-green-600',
-                          isValidateRecipientEmailError || addRecipientError
-                            ? 'animate-bounce text-red-700'
-                            : isValidateRecipientEmailPending
-                              ? 'animate-spin'
-                              : '',
-                        )}
-                      />
-                    </button>
-                  )}
-                />
-                {field.state.meta.errors.length > 0 ? (
-                  <em role="alert" className="text-red-500">
-                    {field.state.meta.errors.join(', ')}
-                  </em>
-                ) : null}
-              </div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        newSeshAddRecipientForm.handleSubmit();
+      }}
+    >
+      <newSeshAddRecipientForm.Field
+        name="recipientEmail"
+        children={(field) => (
+          <div className="max-w-xl">
+            <label
+              htmlFor={field.name}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Recipient Email
+            </label>
+            {validatedRecipients.length == 0 && (
+              <p className="text-xs">Add recipients first.</p>
+            )}
+            <div className="mt-1 flex flex-row items-center justify-between space-x-2">
+              <input
+                id={field.name}
+                type="email"
+                placeholder={defaultValues.recipientEmail}
+                name={field.name}
+                onChange={(e) => {
+                  field.handleChange(e.target.value);
+                }}
+                className="bg-neon-blue-50 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none"
+              />
+              <newSeshAddRecipientForm.Subscribe
+                selector={(state) => [state.canSubmit]}
+                children={([canSubmit]) => (
+                  <button type="submit" disabled={!canSubmit}>
+                    <PlusCircleIcon
+                      className={clsx(
+                        'flex h-7 w-7 cursor-pointer justify-end text-right hover:text-green-600',
+                        isValidateRecipientEmailError || addRecipientError
+                          ? 'animate-bounce text-red-700'
+                          : isValidateRecipientEmailPending
+                            ? 'animate-spin'
+                            : '',
+                      )}
+                    />
+                  </button>
+                )}
+              />
+              {field.state.meta.errors.length > 0 ? (
+                <em role="alert" className="text-red-500">
+                  {field.state.meta.errors.join(', ')}
+                </em>
+              ) : null}
             </div>
-          )}
-        />
-        <newSeshAddRecipientForm.Subscribe
-          selector={(state) => [state.errorMap]}
-          children={([errorMap]) =>
-            errorMap.onSubmit ? (
-              <div>
-                <em>There was an error on the form: {errorMap.onSubmit}</em>
-              </div>
-            ) : null
-          }
-        />
-      </form>
-    </>
+          </div>
+        )}
+      />
+      <newSeshAddRecipientForm.Subscribe
+        selector={(state) => [state.errorMap]}
+        children={([errorMap]) =>
+          errorMap.onSubmit ? (
+            <div>
+              <em>There was an error on the form: {errorMap.onSubmit}</em>
+            </div>
+          ) : null
+        }
+      />
+    </form>
   );
 };
