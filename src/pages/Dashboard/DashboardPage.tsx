@@ -11,11 +11,15 @@ import { useApiGetCurrentUser } from '@services/dashboard/userApiGetCurrentUser'
 import LoadingPage from '@pages/Loading/Loading';
 import ErrorPage from '@pages/Error/ErrorPage';
 import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
+import SeshItem from './components/SeshItem';
+import Modal from '@common/components/Modal/Modal';
+import { useState } from 'react';
+import { NewSeshForm } from '@common/components/Modal/NewSeshForm';
 
 const DashboardPage = () => {
   const isAuthed = getIsAuthed();
-  const { data: getCurrentUser, isLoading, isError } = useApiGetCurrentUser();
-
+  const { data: currentUser, isLoading, isError } = useApiGetCurrentUser();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   if (isLoading) {
     return <LoadingPage />;
   }
@@ -31,7 +35,7 @@ const DashboardPage = () => {
       <ErrorPage />
     );
   }
-  console.log(getCurrentUser);
+  console.log(currentUser);
   return (
     <>
       <DashboardHeader />
@@ -43,7 +47,7 @@ const DashboardPage = () => {
                 Dashboard
               </h1>
               <PlusCircleIcon
-                onClick={() => {}}
+                onClick={() => setIsModalOpen(!isModalOpen)}
                 className="text-neon-blue-600 hover:bg-neon-blue-800 w-12 rounded-full p-1 hover:text-white"
               />
             </div>
@@ -57,29 +61,28 @@ const DashboardPage = () => {
                 Upcoming Created Seshes
               </h1>
               <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
-                <EmptyState
-                  message="Create your first Sesh!"
-                  extraMessage={[
-                    'Send a Sesh invite to someone by email.',
-                    'Then your upcoming created Seshes will appear here.',
-                  ]}
-                  icon={
-                    <CalendarDaysIcon className="text-neon-blue-700 mx-auto h-12 w-12" />
-                  }
-                  onClick={() => {}}
-                />
-
-                {/* {upcomingCreatedSeshes?.length ? (
-                    upcomingCreatedSeshes.map((sesh, idx) => (
-                      <UpcomingCreatedSeshItem
-                        key={idx}
-                        sesh={sesh as Sesh}
-                        userObject={me as User}
-                      />
-                    ))
-                  ) : (
-                    <EmptyState handleShow={handleShowModal} />
-                  )} */}
+                {currentUser?.data?.upcomingCreatedSeshes.length ? (
+                  currentUser?.data?.upcomingCreatedSeshes.map((sesh, idx) => (
+                    <SeshItem
+                      key={idx}
+                      sesh={sesh}
+                      type="created"
+                      userEmail={currentUser?.data?.email}
+                    />
+                  ))
+                ) : (
+                  <EmptyState
+                    message="Create your first Sesh!"
+                    extraMessage={[
+                      'Send a Sesh invite to someone by email.',
+                      'Then your upcoming created Seshes will appear here.',
+                    ]}
+                    icon={
+                      <CalendarDaysIcon className="text-neon-blue-700 mx-auto h-12 w-12" />
+                    }
+                    onClick={() => {}}
+                  />
+                )}
               </div>
             </div>
           </section>
@@ -90,25 +93,25 @@ const DashboardPage = () => {
                 Upcoming Sesh Invites
               </h1>
               <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
-                {/* {incomingSeshInvites?.length ? (
-                    incomingSeshInvites.map((sesh, idx) => (
-                      <IncomingSeshInviteItems
-                        key={idx}
-                        sesh={sesh as Sesh}
-                        token={token}
-                      />
-                    ))
-                  ) : (
-                    <InviteEmptyState />
-                  )} */}
-                <EmptyState
-                  message="No Sesh invites yet!"
-                  extraMessage={'Invites you receive will appear here.'}
-                  icon={
-                    <EnvelopeOpenIcon className="text-neon-blue-700 mx-auto h-12 w-12" />
-                  }
-                  onClick={() => {}}
-                />
+                {currentUser?.data?.seshInvites.length ? (
+                  currentUser?.data?.seshInvites.map((sesh, idx) => (
+                    <SeshItem
+                      key={idx}
+                      sesh={sesh}
+                      type="incoming"
+                      userEmail={currentUser?.data?.email}
+                    />
+                  ))
+                ) : (
+                  <EmptyState
+                    message="No Sesh invites yet!"
+                    extraMessage={'Invites you receive will appear here.'}
+                    icon={
+                      <EnvelopeOpenIcon className="text-neon-blue-700 mx-auto h-12 w-12" />
+                    }
+                    onClick={() => {}}
+                  />
+                )}
               </div>
             </div>
           </section>
@@ -118,6 +121,12 @@ const DashboardPage = () => {
         </main>
       </div>
       <DashboardPageFooter />
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(!isModalOpen)}
+        title="Create a new Sesh"
+        intent="createSesh"
+      />
     </>
   );
 };

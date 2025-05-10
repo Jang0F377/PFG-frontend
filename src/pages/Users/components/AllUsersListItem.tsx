@@ -1,4 +1,5 @@
 import CustomAvatar from '@common/components/Avatar';
+import Button from '@common/components/Button';
 import Divider from '@common/components/Divider';
 import { GetAllUsersResponse } from '@services/users/useApiGetAllUsers';
 
@@ -47,22 +48,14 @@ const AllUsersListItem = ({ user }: AllUsersListItemProps) => {
           </div>
         )}
       </div>
-      <Divider text={'Send me'} />
+      <Divider text={'Send me a'} />
       <div className="flex justify-evenly py-3">
-        <button
-          className="bg-neon-blue-700 text-neon-blue-50 rounded-lg px-1.5 py-2.5 text-xs font-medium disabled:bg-gray-400/75 lg:text-sm"
-          type={'button'}
-          onClick={() => {}}
-        >
-          A friend request
-        </button>
-        <button
-          className="bg-neon-blue-700 text-neon-blue-50 rounded-lg px-1.5 py-2.5 text-xs font-medium disabled:bg-gray-400/75 lg:text-sm"
-          type={'button'}
-          onClick={() => {}}
-        >
-          A Sesh invite
-        </button>
+        <Button className="text-sm" onClick={() => {}}>
+          Friend request
+        </Button>
+        <Button className="text-sm" onClick={() => {}}>
+          Sesh invite
+        </Button>
       </div>
     </div>
   );

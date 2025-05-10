@@ -29,7 +29,8 @@
       "@common/*": ["./src/common/*"],
       "@constants/*": ["./src/constants/*"],
       "@pages/*": ["./src/pages/*"],
-      "@services/*": ["./src/services/*"]
+      "@services/*": ["./src/services/*"],
+      "@custom-types/*": ["./src/types/*"]
     }
   },
   "include": ["src"]

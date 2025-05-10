@@ -10,4 +10,5 @@ export const _ApiUrls = {
   getCurrentUser: '/users/me',
   updateUserAccount: '/users/:userId',
   getAllUsers: '/users',
+  validateRecipientEmail: '/users/validate-recipient/:email',
 };

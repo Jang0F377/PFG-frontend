@@ -5,6 +5,7 @@ import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
 import DashboardHeader from '@pages/Dashboard/components/Header';
 import { Container } from '@common/components/Container';
 import AllUsersListItem from './components/AllUsersListItem';
+import { DashboardPageFooter } from '@pages/Dashboard/components/Footer';
 
 const AllUsersPage = () => {
   const isAuthed = getIsAuthed();
@@ -55,6 +56,7 @@ const AllUsersPage = () => {
           </section>
         </Container>
       </div>
+      <DashboardPageFooter />
     </>
   );
 };
