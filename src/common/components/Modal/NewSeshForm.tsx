@@ -1,12 +1,10 @@
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import {
-  useApiValidateRecipientEmail,
-  ValidateRecipientEmailResponseData,
-} from '@services/users/useApiValidateRecipientEmail';
+import { useApiValidateRecipientEmail } from '@services/users/useApiValidateRecipientEmail';
 import { useForm } from '@tanstack/react-form';
 import clsx from 'clsx';
 import Button from '../Button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useEnhancedEffect from '@common/hooks/useEnhancedEffect';
 
 export interface NewSeshSubmissionOptions extends NewSeshFormOptions {
   recipients: string[];
@@ -23,7 +21,8 @@ export interface NewSeshFormProps {
   handleSubmit: (input: NewSeshSubmissionOptions) => void;
   handleCancel: () => void;
   defaultValues: NewSeshSubmissionOptions;
-  handleAddValidRecipient: (recipientId: string) => void;
+  handleAddValidRecipientEmail: (recipientEmail: string) => void;
+  handleAddValidRecipientUuid: (recipientUuid: string) => void;
   validatedRecipients: string[];
 }
 
@@ -31,13 +30,13 @@ export const NewSeshForm = ({
   handleSubmit,
   handleCancel,
   defaultValues,
-  handleAddValidRecipient,
+  handleAddValidRecipientEmail,
+  handleAddValidRecipientUuid,
   validatedRecipients,
 }: NewSeshFormProps) => {
   const {
     mutate: validateRecipientEmail,
     isPending: isValidateRecipientEmailPending,
-    isError: isValidateRecipientEmailError,
     isSuccess: isValidateRecipientEmailSuccess,
   } = useApiValidateRecipientEmail();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -53,7 +52,8 @@ export const NewSeshForm = ({
             setErrorMessage('User not found by email ' + input.recipientEmail);
             setAddRecipientError(true);
           } else {
-            handleAddValidRecipient(input.recipientEmail);
+            handleAddValidRecipientEmail(input.recipientEmail);
+            handleAddValidRecipientUuid(response.data?.recipientId!);
           }
         },
         onError: (error: any) => {
@@ -66,7 +66,6 @@ export const NewSeshForm = ({
   const newSeshForm = useForm({
     defaultValues,
     onSubmit: ({ value }) => {
-      console.log('onSubmit', value);
       handleSubmit(value);
     },
     validators: {
@@ -104,7 +103,7 @@ export const NewSeshForm = ({
     handleCancel();
   };
 
-  useEffect(() => {
+  useEnhancedEffect(() => {
     if (addRecipientError) {
       setTimeout(() => {
         setAddRecipientError(false);
@@ -123,7 +122,6 @@ export const NewSeshForm = ({
           recipientEmail: '',
         }}
         isValidateRecipientEmailPending={isValidateRecipientEmailPending}
-        isValidateRecipientEmailError={isValidateRecipientEmailError}
         isValidateRecipientEmailSuccess={isValidateRecipientEmailSuccess}
         validatedRecipients={validatedRecipients}
         addRecipientError={addRecipientError}
@@ -305,7 +303,6 @@ interface NewSeshAddRecipientFormProps {
   defaultValues: NewSeshAddRecipientFormOptions;
   handleSubmit: (input: NewSeshAddRecipientFormOptions) => void;
   isValidateRecipientEmailPending: boolean;
-  isValidateRecipientEmailError: boolean;
   isValidateRecipientEmailSuccess: boolean;
   addRecipientError: boolean;
   validatedRecipients: string[];
@@ -315,7 +312,6 @@ const NewSeshAddRecipientForm = ({
   defaultValues,
   handleSubmit,
   isValidateRecipientEmailPending,
-  isValidateRecipientEmailError,
   isValidateRecipientEmailSuccess,
   addRecipientError,
   validatedRecipients,
@@ -385,7 +381,7 @@ const NewSeshAddRecipientForm = ({
                     <PlusCircleIcon
                       className={clsx(
                         'flex h-7 w-7 cursor-pointer justify-end text-right hover:text-green-600',
-                        isValidateRecipientEmailError || addRecipientError
+                        addRecipientError
                           ? 'animate-bounce text-red-700'
                           : isValidateRecipientEmailPending
                             ? 'animate-spin'

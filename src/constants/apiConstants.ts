@@ -11,4 +11,5 @@ export const _ApiUrls = {
   updateUserAccount: '/users/:userId',
   getAllUsers: '/users',
   validateRecipientEmail: '/users/validate-recipient/:email',
+  createSesh: '/sesh',
 };

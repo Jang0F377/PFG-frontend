@@ -1,20 +1,18 @@
-import { Fragment, ReactNode, useState } from 'react';
+import { Fragment, useState } from 'react';
 import {
   Dialog,
   DialogPanel,
   Transition,
   TransitionChild,
 } from '@headlessui/react';
-import {
-  MinusCircleIcon,
-  ShieldCheckIcon,
-  ShieldExclamationIcon,
-} from '@heroicons/react/24/outline';
+import { MinusCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import LoadingPage from '../../../pages/Loading/Loading';
 import { useMachine } from '@xstate/react';
-import { ModalInput, modalMachine } from './modalMachine';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { modalMachine } from './modalMachine';
 import { NewSeshForm, NewSeshSubmissionOptions } from './NewSeshForm';
-import { fromPromise } from 'xstate';
+import { useApiCreateSesh } from '@services/sesh/useApiCreateSesh';
+import useEnhancedEffect from '@common/hooks/useEnhancedEffect';
 
 /**
  * The status of the modal operation
@@ -88,32 +86,51 @@ const Modal = ({
   onStatusClose,
   panelClassName = 'sm:max-w-xl',
 }: ModalProps) => {
-  // Determine if we need to show status content instead of normal content
-  const showStatusContent = status !== 'idle';
-  const [recipients, setRecipients] = useState<string[]>([]);
+  const [recipientsEmails, setRecipientsEmails] = useState<string[]>([]);
+  const [recipientsUuids, setRecipientsUuids] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { mutate: createSesh } = useApiCreateSesh();
   const handleSubmit = (input: NewSeshSubmissionOptions) => {
-    if (recipients.length == 0) {
+    if (recipientsEmails.length === 0) {
       setErrorMessage('Please add at least one recipient');
       return;
     }
-    console.log('handleSubmit', input);
+    send({ type: 'CREATING_SESH' });
+    createSesh(
+      {
+        game: input.gameName,
+        proposedDate: input.gameDate,
+        proposedTime: input.gameTime,
+        recipients: recipientsUuids,
+        notes: input.gameNotes,
+      },
+      {
+        onSuccess: () => {
+          send({ type: 'CREATE_SUCCESS' });
+        },
+        onError: (error) => {
+          send({ type: 'CREATE_ERROR', error: error.message });
+        },
+      },
+    );
   };
+
+  const [state, send] = useMachine(modalMachine);
 
   // Prevent the modal from closing when in loading state
   const handleClose = () => {
     setErrorMessage(null);
-    setRecipients([]);
+    setRecipientsEmails([]);
     onClose();
   };
 
-  const [state, send] = useMachine(modalMachine, {
-    input: {
-      isOpen,
-      recipients,
-      intent,
-    },
-  });
+  useEnhancedEffect(() => {
+    if (state.matches('opened')) {
+      send({
+        type: intent === 'createSesh' ? 'CREATE_SESH' : 'FRIEND_REQUEST',
+      });
+    }
+  }, []);
 
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -144,7 +161,7 @@ const Modal = ({
               <DialogPanel
                 className={`relative transform overflow-hidden rounded-lg bg-white px-2 py-3 text-left shadow-xl transition-all sm:my-8 sm:w-full ${panelClassName}`}
               >
-                {showStatusContent ? (
+                {/* {showStatusContent ? (
                   <div className="z-20 mx-1 flex-col rounded-lg md:mx-auto lg:relative lg:w-[490px]">
                     {status === 'loading' ? (
                       <>
@@ -200,67 +217,116 @@ const Modal = ({
                       </>
                     )}
                   </div>
-                ) : (
-                  <div className="z-20 mx-1 flex-col rounded-lg md:mx-auto">
-                    <section className="bg-neon-blue-100 space-y-6 rounded-t-lg px-1.5 py-3">
-                      <div>
+                ) : ( */}
+                <div className="z-20 mx-1 flex-col rounded-lg md:mx-auto">
+                  <section className="bg-neon-blue-100 space-y-6 rounded-t-lg px-1.5 py-3">
+                    <div>
+                      <div className="flex flex-row items-center justify-between">
                         <h3 className="text-neon-blue-900 text-base leading-6 font-medium md:text-lg">
-                          {title}
+                          {state.matches('createSuccess')
+                            ? 'Sesh created successfully'
+                            : title}
                         </h3>
-                        {description && (
-                          <p className="text-neon-blue-tone-200 mt-0.5 text-xs">
-                            {description}
-                          </p>
+                        {state.matches('createSuccess') && (
+                          <XMarkIcon
+                            className="text-neon-blue-900 hover:bg-neon-blue-900 h-5 w-5 cursor-pointer rounded outline-1 transition-all duration-300 hover:text-white"
+                            onClick={() => {
+                              window.location.reload();
+                            }}
+                          />
                         )}
                       </div>
-                      {intent === 'createSesh' && (
-                        <>
-                          {recipients.length > 0 && (
-                            <div className="bg-neon-blue-100 rounded-t-lg px-1 py-2">
-                              <h3 className="text-neon-blue-900 text-sm leading-6 font-medium underline">
-                                Recipients
-                              </h3>
-                              <ul>
-                                {recipients.map((recipient) => (
-                                  <li
-                                    key={recipient}
-                                    className="flex flex-row items-center justify-between"
-                                  >
-                                    <span className="text-sm">{recipient}</span>
-                                    <MinusCircleIcon
-                                      onClick={() => {
-                                        // TODO: Remove recipient
-                                      }}
-                                      className="h-4 w-4 text-red-500"
-                                    />
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                          <NewSeshForm
-                            handleAddValidRecipient={(recipient) => {
-                              setRecipients([...recipients, recipient]);
-                              send({
-                                type: 'ADD_RECIPIENT',
-                                payload: recipient,
-                              });
-                            }}
-                            handleSubmit={handleSubmit}
-                            handleCancel={handleClose}
-                            defaultValues={{
-                              recipients,
-                              gameName: '',
-                              gameTime: '',
-                              gameDate: '',
-                            }}
-                            validatedRecipients={recipients}
-                          />
-                        </>
+                      {description && (
+                        <p className="text-neon-blue-tone-200 mt-0.5 text-xs">
+                          {description}
+                        </p>
                       )}
-                    </section>
-                  </div>
-                )}
+                    </div>
+                    {state.matches('createSesh') && intent === 'createSesh' && (
+                      <>
+                        {recipientsEmails.length > 0 && (
+                          <div className="bg-neon-blue-100 rounded-t-lg px-1 py-2">
+                            <h3 className="text-neon-blue-900 text-sm leading-6 font-medium underline">
+                              Recipients
+                            </h3>
+                            <ul>
+                              {recipientsEmails.map((recipient) => (
+                                <li
+                                  key={recipient}
+                                  className="flex flex-row items-center justify-between"
+                                >
+                                  <span className="text-sm">{recipient}</span>
+                                  <MinusCircleIcon
+                                    onClick={() => {
+                                      // TODO: Remove recipient
+                                    }}
+                                    className="h-4 w-4 text-red-500"
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        <NewSeshForm
+                          handleAddValidRecipientEmail={(recipient) => {
+                            setRecipientsEmails([
+                              ...recipientsEmails,
+                              recipient,
+                            ]);
+                            send({
+                              type: 'ADD_RECIPIENT',
+                              payload: recipient,
+                            });
+                          }}
+                          handleAddValidRecipientUuid={(recipientUuid) => {
+                            setRecipientsUuids([
+                              ...recipientsUuids,
+                              recipientUuid,
+                            ]);
+                          }}
+                          handleSubmit={handleSubmit}
+                          handleCancel={handleClose}
+                          defaultValues={{
+                            recipients: recipientsEmails,
+                            gameName: '',
+                            gameTime: '',
+                            gameDate: '',
+                          }}
+                          validatedRecipients={recipientsEmails}
+                        />
+                      </>
+                    )}
+                    {state.matches('creatingSesh') && (
+                      <>
+                        <section className="bg-neon-blue-100 space-y-6 rounded-t-lg px-4 py-7 sm:px-6 lg:py-6">
+                          <h3 className="animate-pulse text-center text-lg leading-6 font-medium text-blue-600">
+                            {loadingMessage}
+                          </h3>
+                          <LoadingPage />
+                        </section>
+                        <hr className="border-neon-blue-700 w-full" />
+                        <section className="bg-neon-blue-100 flex items-center justify-end space-x-6 rounded-b-md px-4 py-7 sm:px-6 lg:py-6">
+                          <button
+                            onClick={onStatusClose || onClose}
+                            className="text-neon-blue-50 inline-block rounded-md bg-red-600 px-2 py-2.5 hover:bg-red-800"
+                          >
+                            Close
+                          </button>
+                        </section>
+                      </>
+                    )}
+                    {state.matches('createSuccess') && (
+                      <>
+                        <DotLottieReact
+                          src="https://lottie.host/fe575d1b-ccb8-4d3e-af21-70b9ae08845a/gHy6Cyn3Qo.lottie"
+                          speed={0.5}
+                          autoplay
+                        />
+                      </>
+                    )}
+                  </section>
+                </div>
+                {/* )} */}
               </DialogPanel>
             </TransitionChild>
           </div>

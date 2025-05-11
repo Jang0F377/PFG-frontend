@@ -1,5 +1,5 @@
 import { urls } from '@common/utils/http/routeUrls';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import pfgLogo from '@assets/PFG-702-background.png';
 import { useNavigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
@@ -10,13 +10,15 @@ import {
 import Spinner from '@pages/Loading/components/Spinner';
 import { setIdToken, setRefreshToken } from '@common/utils/auth/tokens';
 import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
+import useEnhancedEffect from '@common/hooks/useEnhancedEffect';
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
   const { mutate: performLogin, isPending, isError } = useApiPerformLogin();
   const isAuthed = getIsAuthed();
 
-  useEffect(() => {
+  useEnhancedEffect(() => {
     if (isAuthed) {
       navigate(urls.DASHBOARD.route);
     }
