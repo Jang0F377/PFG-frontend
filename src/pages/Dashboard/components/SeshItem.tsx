@@ -193,7 +193,7 @@ const SeshItem = ({
           </div>
         )}
         {type === 'incoming' && givenAnswer === 'declined' && (
-          <div className="inline-block rounded bg-red-700 px-1 py-0.5 text-sm font-medium text-red-50 md:mx-3 md:px-2 md:py-1 lg:text-base">
+          <div className="m-1.5 inline-block rounded bg-red-700 px-1 py-0.5 text-sm font-medium text-red-50 md:px-2 md:py-1 lg:text-base">
             {givenAnswer}
           </div>
         )}

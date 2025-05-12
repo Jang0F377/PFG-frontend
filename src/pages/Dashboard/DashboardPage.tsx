@@ -94,17 +94,15 @@ const DashboardPage = () => {
               </h1>
               <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
                 {currentUser?.data?.seshInvites.length ? (
-                  currentUser?.data?.seshInvites.map(
-                    (sesh: UpcomingSesh, idx) => (
-                      <SeshItem
-                        key={idx}
-                        sesh={sesh}
-                        type="incoming"
-                        userEmail={currentUser?.data?.email}
-                        answer={sesh.invitationResponse}
-                      />
-                    ),
-                  )
+                  currentUser?.data?.seshInvites.map((sesh, idx) => (
+                    <SeshItem
+                      key={idx}
+                      sesh={sesh}
+                      type="incoming"
+                      userEmail={currentUser?.data?.email}
+                      answer={sesh?.status}
+                    />
+                  ))
                 ) : (
                   <EmptyState
                     message="No Sesh invites yet!"
