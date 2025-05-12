@@ -4,6 +4,7 @@ export interface UpcomingSesh {
   proposedDate: string;
   proposedTime: string;
   seshCreatedBy: string;
+  seshCreatedByEmail: string;
   status: 'planned' | 'completed' | 'cancelled';
   createdAt: string;
   numAccepted?: number;
@@ -18,6 +19,7 @@ export interface Recipient {
   invitedAt: string;
   status: 'accepted' | 'declined' | 'invited';
   numRecipients: string;
+  seshCreatedByEmail: string;
 }
 export interface CreatedSesh {
   id: string;

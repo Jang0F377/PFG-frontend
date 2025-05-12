@@ -1,4 +1,4 @@
-import { assign, setup } from 'xstate';
+import { setup } from 'xstate';
 
 export type ModalEvent =
   | { type: 'OPEN_MODAL' }

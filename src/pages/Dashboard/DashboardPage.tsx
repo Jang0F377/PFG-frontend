@@ -48,7 +48,7 @@ const DashboardPage = () => {
               </h1>
               <PlusCircleIcon
                 onClick={() => setIsModalOpen(!isModalOpen)}
-                className="text-neon-blue-600 hover:bg-neon-blue-800 w-12 rounded-full p-1 hover:text-white"
+                className="text-neon-blue-600 hover:bg-neon-blue-800 w-12 cursor-pointer rounded-full p-1 hover:text-white"
               />
             </div>
           </header>

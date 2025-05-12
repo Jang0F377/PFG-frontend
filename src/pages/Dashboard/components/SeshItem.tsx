@@ -110,8 +110,10 @@ const SeshItem = ({
       </header>
 
       <div className="mx-auto mt-1 flex flex-col space-y-1">
-        <CustomAvatar email={userEmail} size="md" />
-        <p className="text-neon-blue-900 text-sm font-medium">{username}</p>
+        <CustomAvatar email={sesh.seshCreatedByEmail} size="md" />
+        <p className="text-neon-blue-900 text-sm font-medium">
+          {sesh.seshCreatedByEmail}
+        </p>
       </div>
 
       <Divider text="Details" />
