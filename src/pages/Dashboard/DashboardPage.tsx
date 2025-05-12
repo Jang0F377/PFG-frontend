@@ -7,14 +7,14 @@ import {
 import Friends from './components/Friends';
 import DashboardHeader from './components/Header';
 import { DashboardPageFooter } from './components/Footer';
-import { useApiGetCurrentUser } from '@services/dashboard/userApiGetCurrentUser';
+import { useApiGetCurrentUser } from '@services/dashboard/useApiGetCurrentUser';
 import LoadingPage from '@pages/Loading/Loading';
 import ErrorPage from '@pages/Error/ErrorPage';
 import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
 import SeshItem from './components/SeshItem';
 import Modal from '@common/components/Modal/Modal';
 import { useState } from 'react';
-import { NewSeshForm } from '@common/components/Modal/NewSeshForm';
+import { UpcomingSesh } from '@custom-types/domain';
 
 const DashboardPage = () => {
   const isAuthed = getIsAuthed();
@@ -94,14 +94,17 @@ const DashboardPage = () => {
               </h1>
               <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
                 {currentUser?.data?.seshInvites.length ? (
-                  currentUser?.data?.seshInvites.map((sesh, idx) => (
-                    <SeshItem
-                      key={idx}
-                      sesh={sesh}
-                      type="incoming"
-                      userEmail={currentUser?.data?.email}
-                    />
-                  ))
+                  currentUser?.data?.seshInvites.map(
+                    (sesh: UpcomingSesh, idx) => (
+                      <SeshItem
+                        key={idx}
+                        sesh={sesh}
+                        type="incoming"
+                        userEmail={currentUser?.data?.email}
+                        answer={sesh.invitationResponse}
+                      />
+                    ),
+                  )
                 ) : (
                   <EmptyState
                     message="No Sesh invites yet!"

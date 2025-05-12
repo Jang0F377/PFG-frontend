@@ -1,5 +1,5 @@
 import Button from '@common/components/Button';
-import { useApiGetCurrentUser } from '@services/dashboard/userApiGetCurrentUser';
+import { useApiGetCurrentUser } from '@services/dashboard/useApiGetCurrentUser';
 import { useState } from 'react';
 import { useMachine } from '@xstate/react';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { accountMachine } from './accountMachine';
 import AccountForm, { AccountFormOptions } from './components/AccountForm';
 import { useApiUpdateUserAccount } from '@services/account/useApiUpdateUserAccount';
 import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
+
 const AccountPage = () => {
   const isAuthed = getIsAuthed();
   const navigate = useNavigate();

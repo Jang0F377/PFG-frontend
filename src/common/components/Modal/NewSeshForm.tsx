@@ -7,6 +7,7 @@ import { useState } from 'react';
 import useEnhancedEffect from '@common/hooks/useEnhancedEffect';
 
 export interface NewSeshSubmissionOptions extends NewSeshFormOptions {
+  intentRecipient?: string;
   recipients: string[];
 }
 
@@ -119,7 +120,7 @@ export const NewSeshForm = ({
       <NewSeshAddRecipientForm
         handleSubmit={handleValidateSubmit}
         defaultValues={{
-          recipientEmail: '',
+          recipientEmail: defaultValues.intentRecipient ?? '',
         }}
         isValidateRecipientEmailPending={isValidateRecipientEmailPending}
         isValidateRecipientEmailSuccess={isValidateRecipientEmailSuccess}
@@ -296,6 +297,7 @@ export const NewSeshForm = ({
 };
 
 interface NewSeshAddRecipientFormOptions {
+  intentRecipient?: string;
   recipientEmail: string;
 }
 

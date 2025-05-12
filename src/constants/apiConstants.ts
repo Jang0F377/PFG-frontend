@@ -12,4 +12,5 @@ export const _ApiUrls = {
   getAllUsers: '/users',
   validateRecipientEmail: '/users/validate-recipient/:email',
   createSesh: '/sesh',
+  sendSeshDecision: '/sesh/:seshId/:decision',
 };

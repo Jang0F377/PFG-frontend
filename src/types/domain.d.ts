@@ -10,6 +10,8 @@ export interface UpcomingSesh {
   numAccepted?: number;
   numDeclined?: number;
   numRecipients?: number;
+  seshId: string;
+  invitationResponse: 'accepted' | 'declined' | 'invited';
 }
 
 export interface Recipient {

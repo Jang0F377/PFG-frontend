@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { AtSymbolIcon } from '@heroicons/react/20/solid';
 import {
   HandThumbDownIcon,
   HandThumbUpIcon,
   UserIcon,
 } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import LoadingPage from '../../Loading/Loading';
 import CustomAvatar from '@common/components/Avatar';
 import Divider from '@common/components/Divider';
 
 import { convertMilitaryToStandard } from '@common/utils/timeUtils';
 import { UpcomingSesh } from '@custom-types/domain';
+import { useApiSendSeshDecision } from '@services/dashboard/useApiSendDecision';
 
 interface SeshItemProps {
   /**
@@ -42,7 +41,7 @@ interface SeshItemProps {
   /**
    * Current answer status (for incoming seshes)
    */
-  answer?: 'accepted' | 'declined' | 'pending';
+  answer?: 'accepted' | 'declined' | 'invited';
 }
 
 /**
@@ -54,50 +53,51 @@ const SeshItem = ({
   userEmail,
   onAccept,
   onDecline,
-  answer = 'pending',
+  answer,
 }: SeshItemProps) => {
   const [givenAnswer, setGivenAnswer] = useState<
-    'accepted' | 'declined' | 'pending'
+    'accepted' | 'declined' | 'invited' | undefined
   >(answer);
   const [selected, setSelected] = useState('');
   const [localLoading, setLocalLoading] = useState(false);
 
-  const confirm = 'Confirm';
+  const accept = 'Accept';
   const decline = 'Decline';
   const username = userEmail ? userEmail.split('@')[0] : 'Loading';
+  const { mutate: sendSeshDecision, isPending: isSendingDecision } =
+    useApiSendSeshDecision();
 
   // Handles user clicking the confirm button
   const handleConfirmClick = () => {
-    if (selected !== confirm) {
-      setSelected(confirm);
-    }
+    if (selected !== accept) setSelected(accept);
   };
 
   // Handles user clicking the decline button
   const handleDeclineClick = () => {
-    if (selected !== decline) {
-      setSelected(decline);
-    }
+    if (selected !== decline) setSelected(decline);
   };
 
   // Handles submitting the user's decision
   const handleSubmitDecision = async () => {
-    if (!sesh.id) return;
+    console.log('handleSubmitDecision', sesh.seshId, selected);
+    if (!sesh.seshId) return;
 
     setLocalLoading(true);
-    try {
-      if (selected === confirm && onAccept) {
-        await onAccept(sesh.id);
-        setGivenAnswer('accepted');
-      } else if (selected === decline && onDecline) {
-        await onDecline(sesh.id);
-        setGivenAnswer('declined');
-      }
-    } catch (error) {
-      console.error('Error submitting decision:', error);
-    } finally {
-      setLocalLoading(false);
-    }
+    sendSeshDecision(
+      {
+        seshId: sesh.seshId,
+        decision: selected === accept ? 'accepted' : 'declined',
+      },
+      {
+        onSuccess: () => {
+          setLocalLoading(false);
+          window.location.reload();
+        },
+        onError: () => {
+          setLocalLoading(false);
+        },
+      },
+    );
   };
 
   return (
@@ -148,20 +148,20 @@ const SeshItem = ({
 
       <div className="z-20 mx-auto flex flex-col text-center">
         {/* Decision buttons - only for incoming seshes with pending status */}
-        {type === 'incoming' && givenAnswer === 'pending' && (
+        {type === 'incoming' && givenAnswer === 'invited' && (
           <div className="flex flex-col">
             <span className="mx-auto my-2 mb-4 flex rounded-md shadow-sm">
               <button
                 onClick={handleConfirmClick}
-                id={confirm}
+                id={accept}
                 className={clsx(
                   'relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-medium',
-                  selected === confirm
+                  selected === accept
                     ? 'border border-white bg-green-700 text-green-50'
                     : 'border border-gray-300 bg-white text-green-700 hover:border-green-50 hover:bg-green-700 hover:text-green-50 hover:ring-1 hover:ring-green-500',
                 )}
               >
-                {confirm}
+                {accept}
               </button>
               <button
                 onClick={handleDeclineClick}
@@ -178,9 +178,8 @@ const SeshItem = ({
             </span>
             {selected && (
               <button
-                disabled={selected !== confirm && selected !== decline}
                 onClick={handleSubmitDecision}
-                className="bg-neon-blue-600 text-neon-blue-50 hover:bg-neon-blue-800 my-0.5 inline-block rounded-lg px-1.5 py-2 text-sm font-medium disabled:bg-gray-400"
+                className="bg-neon-blue-600 text-neon-blue-50 hover:bg-neon-blue-800 my-1 inline-block cursor-pointer rounded-lg px-1.5 py-2 text-sm font-medium disabled:bg-gray-400"
               >
                 Make Decision
               </button>
@@ -189,7 +188,7 @@ const SeshItem = ({
         )}
         {/* Status badges for answered invites */}
         {type === 'incoming' && givenAnswer === 'accepted' && (
-          <div className="inline-block rounded bg-green-700 px-1 py-0.5 text-sm font-medium text-green-50 md:mx-3 md:px-2 md:py-1 lg:text-base">
+          <div className="m-1.5 inline-block rounded bg-green-700 px-1 py-0.5 text-sm font-medium text-green-50 md:px-2 md:py-1 lg:text-base">
             {givenAnswer}
           </div>
         )}

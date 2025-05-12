@@ -45,6 +45,8 @@ interface ModalProps {
    */
   intent?: 'createSesh' | 'friendRequest';
 
+  intentRecipient?: string;
+
   /**
    * Current status of modal operation
    */
@@ -79,6 +81,7 @@ const Modal = ({
   onClose,
   title,
   description,
+  intentRecipient,
   intent = 'createSesh',
   status = 'idle',
   successMessage = 'Operation completed successfully',
@@ -273,10 +276,6 @@ const Modal = ({
                               ...recipientsEmails,
                               recipient,
                             ]);
-                            send({
-                              type: 'ADD_RECIPIENT',
-                              payload: recipient,
-                            });
                           }}
                           handleAddValidRecipientUuid={(recipientUuid) => {
                             setRecipientsUuids([
@@ -291,6 +290,7 @@ const Modal = ({
                             gameName: '',
                             gameTime: '',
                             gameDate: '',
+                            intentRecipient,
                           }}
                           validatedRecipients={recipientsEmails}
                         />

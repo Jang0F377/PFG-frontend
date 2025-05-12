@@ -1,13 +1,20 @@
 import CustomAvatar from '@common/components/Avatar';
 import Button from '@common/components/Button';
 import Divider from '@common/components/Divider';
+import Modal from '@common/components/Modal/Modal';
 import { GetAllUsersResponse } from '@services/users/useApiGetAllUsers';
+import { useState } from 'react';
 
 interface AllUsersListItemProps {
   user: GetAllUsersResponse;
 }
 
 const AllUsersListItem = ({ user }: AllUsersListItemProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [intentRecipient, setIntentRecipient] = useState<string | undefined>(
+    user.email,
+  );
+
   return (
     <div className="bg-neon-blue-300 m-3 mx-auto w-[18rem] justify-center rounded-lg shadow md:mx-0">
       <div className="px-3 py-4 sm:px-5">
@@ -53,10 +60,22 @@ const AllUsersListItem = ({ user }: AllUsersListItemProps) => {
         <Button className="text-sm" onClick={() => {}}>
           Friend request
         </Button>
-        <Button className="text-sm" onClick={() => {}}>
+        <Button
+          className="text-sm"
+          onClick={() => {
+            setIsModalOpen(!isModalOpen);
+          }}
+        >
           Sesh invite
         </Button>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(!isModalOpen)}
+        title="Create a new Sesh"
+        intent="createSesh"
+        intentRecipient={intentRecipient}
+      />
     </div>
   );
 };
