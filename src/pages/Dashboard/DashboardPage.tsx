@@ -14,7 +14,7 @@ import { getIsAuthed } from '@common/utils/auth/getIsAuthed';
 import SeshItem from './components/SeshItem';
 import Modal from '@common/components/Modal/Modal';
 import { useState } from 'react';
-import { UpcomingSesh } from '@custom-types/domain';
+import { Recipient, UpcomingSesh } from '@custom-types/domain';
 
 const DashboardPage = () => {
   const isAuthed = getIsAuthed();
@@ -62,14 +62,16 @@ const DashboardPage = () => {
               </h1>
               <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
                 {currentUser?.data?.upcomingCreatedSeshes.length ? (
-                  currentUser?.data?.upcomingCreatedSeshes.map((sesh, idx) => (
-                    <SeshItem
-                      key={idx}
-                      sesh={sesh}
-                      type="created"
-                      userEmail={currentUser?.data?.email}
-                    />
-                  ))
+                  currentUser?.data?.upcomingCreatedSeshes.map(
+                    (sesh: UpcomingSesh, idx) => (
+                      <SeshItem
+                        key={idx}
+                        sesh={sesh}
+                        type="created"
+                        userEmail={currentUser?.data?.email}
+                      />
+                    ),
+                  )
                 ) : (
                   <EmptyState
                     message="Create your first Sesh!"
@@ -94,7 +96,7 @@ const DashboardPage = () => {
               </h1>
               <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
                 {currentUser?.data?.seshInvites.length ? (
-                  currentUser?.data?.seshInvites.map((sesh, idx) => (
+                  currentUser?.data?.seshInvites.map((sesh: Recipient, idx) => (
                     <SeshItem
                       key={idx}
                       sesh={sesh}

@@ -5,18 +5,16 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import CustomAvatar from '@common/components/Avatar';
 import Divider from '@common/components/Divider';
 
 import { convertMilitaryToStandard } from '@common/utils/timeUtils';
-import { UpcomingSesh } from '@custom-types/domain';
 import { useApiSendSeshDecision } from '@services/dashboard/useApiSendDecision';
 
 interface SeshItemProps {
   /**
    * The sesh data to display
    */
-  sesh: UpcomingSesh;
+  sesh: Record<string, any>;
 
   /**
    * Whether this is an incoming or created sesh
@@ -109,8 +107,8 @@ const SeshItem = ({
         <Divider text={'From'} />
       </header>
 
-      <div className="mx-auto mt-1 flex flex-col space-y-1">
-        <CustomAvatar email={sesh.seshCreatedByEmail} size="md" />
+      <div className="mx-auto flex flex-col items-center space-y-1">
+        {/* <CustomAvatar email={sesh.seshCreatedByEmail} size="md" /> */}
         <p className="text-neon-blue-900 text-sm font-medium">
           {sesh.seshCreatedByEmail}
         </p>

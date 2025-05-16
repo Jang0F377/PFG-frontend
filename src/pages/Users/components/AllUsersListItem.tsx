@@ -1,4 +1,3 @@
-import CustomAvatar from '@common/components/Avatar';
 import Button from '@common/components/Button';
 import Divider from '@common/components/Divider';
 import Modal from '@common/components/Modal/Modal';
@@ -10,16 +9,17 @@ interface AllUsersListItemProps {
 }
 
 const AllUsersListItem = ({ user }: AllUsersListItemProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateSeshModalOpen, setIsCreateSeshModalOpen] = useState(false);
+  const [isFriendRequestModalOpen, setIsFriendRequestModalOpen] =
+    useState(false);
   const [intentRecipient, setIntentRecipient] = useState<string | undefined>(
     user.email,
   );
 
   return (
     <div className="bg-neon-blue-300 m-3 mx-auto w-[18rem] justify-center rounded-lg shadow md:mx-0">
-      <div className="px-3 py-4 sm:px-5">
+      <div className="items-center px-3 py-4 sm:px-5">
         <header className="mx-auto flex flex-col space-y-1 text-center">
-          <CustomAvatar email={user?.email} size={'md'} />
           <h1 className="text-neon-blue-900">{user?.email}</h1>
           {/* {user?.email === userEmail ? (
           <>
@@ -57,24 +57,35 @@ const AllUsersListItem = ({ user }: AllUsersListItemProps) => {
       </div>
       <Divider text={'Send me a'} />
       <div className="flex justify-evenly py-3">
-        <Button className="text-sm" onClick={() => {}}>
+        <Button
+          className="text-sm"
+          onClick={() => {
+            setIsFriendRequestModalOpen(!isFriendRequestModalOpen);
+          }}
+        >
           Friend request
         </Button>
         <Button
           className="text-sm"
           onClick={() => {
-            setIsModalOpen(!isModalOpen);
+            setIsCreateSeshModalOpen(!isCreateSeshModalOpen);
           }}
         >
           Sesh invite
         </Button>
       </div>
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(!isModalOpen)}
+        isOpen={isCreateSeshModalOpen}
+        onClose={() => setIsCreateSeshModalOpen(!isCreateSeshModalOpen)}
         title="Create a new Sesh"
         intent="createSesh"
         intentRecipient={intentRecipient}
+      />
+      <Modal
+        isOpen={isFriendRequestModalOpen}
+        onClose={() => setIsFriendRequestModalOpen(!isFriendRequestModalOpen)}
+        title="Send a friend request"
+        intent="friendRequest"
       />
     </div>
   );
