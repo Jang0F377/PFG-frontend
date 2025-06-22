@@ -48,6 +48,15 @@ export const modalMachine = setup({
     },
     createSuccess: {},
     createError: {},
-    friendRequest: {},
+    friendRequest: {
+      on: {
+        CREATE_SUCCESS: {
+          target: 'createSuccess',
+        },
+        CREATE_ERROR: {
+          target: 'createError',
+        },
+      },
+    },
   },
 });

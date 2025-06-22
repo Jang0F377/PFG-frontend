@@ -13,6 +13,7 @@ import { modalMachine } from './modalMachine';
 import { NewSeshForm, NewSeshSubmissionOptions } from './NewSeshForm';
 import { useApiCreateSesh } from '@services/sesh/useApiCreateSesh';
 import useEnhancedEffect from '@common/hooks/useEnhancedEffect';
+import { FriendRequest } from './FriendRequest';
 
 /**
  * The status of the modal operation
@@ -46,6 +47,7 @@ interface ModalProps {
   intent?: 'createSesh' | 'friendRequest';
 
   intentRecipient?: string;
+  intentRecipientUuid?: string;
 
   /**
    * Current status of modal operation
@@ -82,6 +84,7 @@ const Modal = ({
   title,
   description,
   intentRecipient,
+  intentRecipientUuid,
   intent = 'createSesh',
   status = 'idle',
   successMessage = 'Operation completed successfully',
@@ -227,7 +230,7 @@ const Modal = ({
                       <div className="flex flex-row items-center justify-between">
                         <h3 className="text-neon-blue-900 text-base leading-6 font-medium md:text-lg">
                           {state.matches('createSuccess')
-                            ? 'Sesh created successfully'
+                            ? 'Successfully created.'
                             : title}
                         </h3>
                         {state.matches('createSuccess') && (
@@ -245,6 +248,20 @@ const Modal = ({
                         </p>
                       )}
                     </div>
+                    {state.matches('friendRequest') &&
+                      intent === 'friendRequest' && (
+                        <FriendRequest
+                          recipientEmail={intentRecipient!}
+                          recipientUuid={intentRecipientUuid!}
+                          handleSuccess={() => {
+                            send({ type: 'CREATE_SUCCESS' });
+                          }}
+                          handleError={(error) => {
+                            send({ type: 'CREATE_ERROR', error });
+                          }}
+                          handleClose={onClose}
+                        />
+                      )}
                     {state.matches('createSesh') && intent === 'createSesh' && (
                       <>
                         {recipientsEmails.length > 0 && (
@@ -320,6 +337,15 @@ const Modal = ({
                         <DotLottieReact
                           src="https://lottie.host/fe575d1b-ccb8-4d3e-af21-70b9ae08845a/gHy6Cyn3Qo.lottie"
                           speed={0.5}
+                          autoplay
+                        />
+                      </>
+                    )}
+                    {state.matches('createError') && (
+                      <>
+                        <DotLottieReact
+                          src="https://lottie.host/106de98f-a4df-412f-8dff-3c4bcfab86aa/SmQgj9XmSf.lottie"
+                          loop
                           autoplay
                         />
                       </>

@@ -3,7 +3,7 @@ import { http } from '@common/utils/http/http';
 import { ApiResponse } from '@common/utils/http/types';
 import { CreatedSesh } from '@custom-types/domain';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
+import { type AxiosError } from 'axios';
 
 interface CreateSeshRequest {
   game: string;

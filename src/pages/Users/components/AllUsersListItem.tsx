@@ -15,6 +15,7 @@ const AllUsersListItem = ({ user }: AllUsersListItemProps) => {
   const [intentRecipient, setIntentRecipient] = useState<string | undefined>(
     user.email,
   );
+  console.log('user', user);
 
   return (
     <div className="bg-neon-blue-300 m-3 mx-auto w-[18rem] justify-center rounded-lg shadow md:mx-0">
@@ -80,12 +81,15 @@ const AllUsersListItem = ({ user }: AllUsersListItemProps) => {
         title="Create a new Sesh"
         intent="createSesh"
         intentRecipient={intentRecipient}
+        intentRecipientUuid={user.id}
       />
       <Modal
         isOpen={isFriendRequestModalOpen}
         onClose={() => setIsFriendRequestModalOpen(!isFriendRequestModalOpen)}
         title="Send a friend request"
         intent="friendRequest"
+        intentRecipient={intentRecipient}
+        intentRecipientUuid={user.id}
       />
     </div>
   );
