@@ -88,7 +88,7 @@ export function EmptyState({
 
       {/* Render icon after heading */}
       {
-        <div className="mx-auto mt-6 flex justify-center">
+        <div className="mx-auto mt-6">
           <div className="mx-auto justify-center text-center">
             {icon}
             {/* Some icons might have a title below them */}

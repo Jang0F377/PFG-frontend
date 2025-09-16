@@ -4,7 +4,6 @@ import {
   EnvelopeOpenIcon,
   PlusCircleIcon,
 } from '@heroicons/react/24/outline';
-import Friends from './components/Friends';
 import DashboardHeader from './components/Header';
 import { DashboardPageFooter } from './components/Footer';
 import { useApiGetCurrentUser } from '@services/dashboard/useApiGetCurrentUser';
@@ -15,6 +14,7 @@ import SeshItem from './components/SeshItem';
 import Modal from '@common/components/Modal/Modal';
 import { useState } from 'react';
 import { Recipient, UpcomingSesh } from '@custom-types/domain';
+import Friends from './components/Friends';
 
 const DashboardPage = () => {
   const isAuthed = getIsAuthed();
@@ -36,10 +36,13 @@ const DashboardPage = () => {
     );
   }
   console.log(currentUser);
+  const pendingIncomingFriendRequests = (
+    currentUser?.data?.friendRequests || []
+  ).filter((request) => request?.status === 'pending');
   return (
     <>
       <DashboardHeader />
-      <div id={'dashboard'} className="min-h-screen w-full bg-gray-50">
+      <div id={'dashboard'} className="h-full w-full bg-gray-50">
         <div className="pb-32">
           <header className="border-neon-blue-700 border-y py-1">
             <div className="mx-auto flex max-w-7xl flex-row items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -54,13 +57,13 @@ const DashboardPage = () => {
           </header>
         </div>
 
-        <main className="mx-3 -mt-32 space-y-3 pt-3">
-          <section className="mx-auto max-w-7xl">
-            <div className="bg-neon-blue-200 mx-auto items-center justify-center rounded-lg px-5 py-6 text-center sm:px-6">
+        <main className="mx-3 -mt-32 grid grid-cols-1 items-stretch gap-6 pt-3 md:grid-cols-2">
+          <section className="h-full w-full">
+            <div className="bg-neon-blue-200 mx-auto items-center justify-center rounded-lg px-2 py-3 text-center">
               <h1 className="-mt-2 text-left text-xl font-medium">
                 Upcoming Created Seshes
               </h1>
-              <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
+              <div className="border-neon-blue-800/50 flex flex-1 items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
                 {currentUser?.data?.upcomingCreatedSeshes.length ? (
                   currentUser?.data?.upcomingCreatedSeshes.map(
                     (sesh: UpcomingSesh, idx) => (
@@ -75,10 +78,7 @@ const DashboardPage = () => {
                 ) : (
                   <EmptyState
                     message="Create your first Sesh!"
-                    extraMessage={[
-                      'Send a Sesh invite to someone by email.',
-                      'Then your upcoming created Seshes will appear here.',
-                    ]}
+                    extraMessage={'Send a Sesh invite to someone by email.'}
                     icon={
                       <CalendarDaysIcon className="text-neon-blue-700 mx-auto h-12 w-12" />
                     }
@@ -89,12 +89,12 @@ const DashboardPage = () => {
             </div>
           </section>
 
-          <section className="mx-auto max-w-7xl">
-            <div className="bg-neon-blue-200 mx-auto items-center justify-center rounded-lg px-5 py-6 text-center sm:px-6">
+          <section className="h-full w-full">
+            <div className="bg-neon-blue-200 mx-auto items-center justify-center rounded-lg px-2 py-3 text-center">
               <h1 className="-mt-2 text-left text-xl font-medium">
                 Upcoming Sesh Invites
               </h1>
-              <div className="border-neon-blue-800/50 flex flex-row flex-wrap items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
+              <div className="border-neon-blue-800/50 flex flex-1 items-center justify-center gap-x-2 gap-y-2 rounded-lg border-4">
                 {currentUser?.data?.seshInvites.length ? (
                   currentUser?.data?.seshInvites.map((sesh: Recipient, idx) => (
                     <SeshItem
@@ -118,8 +118,11 @@ const DashboardPage = () => {
               </div>
             </div>
           </section>
-          <section className="mx-auto max-w-7xl pb-3">
-            <Friends />
+          <section className="pb-3">
+            <Friends
+              friends={currentUser?.data?.friends}
+              incomingFriendRequests={pendingIncomingFriendRequests}
+            />
           </section>
         </main>
       </div>

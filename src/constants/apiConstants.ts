@@ -14,4 +14,5 @@ export const _ApiUrls = {
   createSesh: '/sesh',
   sendSeshDecision: '/sesh/:seshId/:decision',
   sendFriendRequest: '/friends/request',
+  answerFriendRequest: '/friends/:friendRequestId/:decision',
 };

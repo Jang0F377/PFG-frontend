@@ -4,6 +4,12 @@ import { http } from '@common/utils/http/http';
 import { ApiResponse } from '@common/utils/http/types';
 import { useQuery } from '@tanstack/react-query';
 import { type AxiosError } from 'axios';
+import {
+  Friend,
+  FriendRequest,
+  Recipient,
+  UpcomingSesh,
+} from '@custom-types/domain';
 
 export interface GetCurrentUserResponse {
   id: string;
@@ -14,10 +20,10 @@ export interface GetCurrentUserResponse {
   createdAt: string;
   updatedAt: string;
   pfgSupporter: boolean;
-  friendRequests: [];
-  friends: [];
-  upcomingCreatedSeshes: [];
-  seshInvites: [];
+  friendRequests: FriendRequest[];
+  friends: Friend[];
+  upcomingCreatedSeshes: UpcomingSesh[];
+  seshInvites: Recipient[];
 }
 
 export type GetCurrentUserResponseData = ApiResponse<GetCurrentUserResponse>;

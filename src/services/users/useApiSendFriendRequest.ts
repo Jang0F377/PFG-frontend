@@ -6,13 +6,16 @@ import { type AxiosError } from 'axios';
 
 interface CreateFriendRequest {
   recipientId: string;
+  recipientEmail: string;
   requesterId: string;
 }
 
 export interface CreateFriendRequestResponse {
   id: string;
   recipientId: string;
+  recipientEmail: string;
   requesterId: string;
+  requesterEmail: string;
   status: 'pending' | 'accepted' | 'declined';
   createdAt: string;
   updatedAt?: string;

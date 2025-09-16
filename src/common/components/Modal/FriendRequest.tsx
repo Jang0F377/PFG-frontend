@@ -25,6 +25,7 @@ export const FriendRequest = ({
     sendFriendRequest(
       {
         recipientId: recipientUuid,
+        recipientEmail: recipientEmail,
         requesterId: requesterUuid,
       },
       {

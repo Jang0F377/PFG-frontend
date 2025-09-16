@@ -32,3 +32,24 @@ export interface CreatedSesh {
   recipients: Recipient[];
   notes?: string;
 }
+
+export interface Friend {
+  id: string;
+  userId: string;
+  friendId: string;
+  email: string;
+  username?: string;
+  status: 'active' | 'blocked';
+  createdAt: string;
+}
+
+export interface FriendRequest {
+  id: string;
+  recipientId: string;
+  requesterId: string;
+  requesterEmail: string;
+  recipientEmail: string;
+  status: 'pending' | 'accepted' | 'declined';
+  createdAt: string;
+  updatedAt?: string;
+}
