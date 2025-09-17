@@ -32,8 +32,8 @@ export const FriendRequest = ({
         onSuccess: () => {
           handleSuccess();
         },
-        onError: (error) => {
-          handleError(error.message);
+        onError: (error: any) => {
+          handleError(error?.response?.data?.detail?.error);
         },
       },
     );

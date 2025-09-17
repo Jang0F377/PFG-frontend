@@ -14,6 +14,7 @@ import { NewSeshForm, NewSeshSubmissionOptions } from './NewSeshForm';
 import { useApiCreateSesh } from '@services/sesh/useApiCreateSesh';
 import useEnhancedEffect from '@common/hooks/useEnhancedEffect';
 import { FriendRequest } from './FriendRequest';
+import ModalError from './ModalError';
 
 /**
  * The status of the modal operation
@@ -115,6 +116,7 @@ const Modal = ({
           send({ type: 'CREATE_SUCCESS' });
         },
         onError: (error) => {
+          setErrorMessage(error.message);
           send({ type: 'CREATE_ERROR', error: error.message });
         },
       },
@@ -257,6 +259,7 @@ const Modal = ({
                             send({ type: 'CREATE_SUCCESS' });
                           }}
                           handleError={(error) => {
+                            setErrorMessage(error);
                             send({ type: 'CREATE_ERROR', error });
                           }}
                           handleClose={onClose}
@@ -342,13 +345,10 @@ const Modal = ({
                       </>
                     )}
                     {state.matches('createError') && (
-                      <>
-                        <DotLottieReact
-                          src="https://lottie.host/106de98f-a4df-412f-8dff-3c4bcfab86aa/SmQgj9XmSf.lottie"
-                          loop
-                          autoplay
-                        />
-                      </>
+                      <ModalError
+                        error={errorMessage ?? 'internal_server_error'}
+                        onClose={onStatusClose || onClose}
+                      />
                     )}
                   </section>
                 </div>

@@ -20,7 +20,10 @@ export interface GetCurrentUserResponse {
   createdAt: string;
   updatedAt: string;
   pfgSupporter: boolean;
-  friendRequests: FriendRequest[];
+  friendRequests: {
+    received: FriendRequest[];
+    sent: FriendRequest[];
+  };
   friends: Friend[];
   upcomingCreatedSeshes: UpcomingSesh[];
   seshInvites: Recipient[];
