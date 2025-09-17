@@ -14,7 +14,7 @@ import SeshItem from './components/SeshItem';
 import Modal from '@common/components/Modal/Modal';
 import { useState } from 'react';
 import { Recipient, UpcomingSesh } from '@custom-types/domain';
-import Friends from './components/Friends';
+import FriendsAccordion from './components/Friends/FriendsAccordion';
 
 const DashboardPage = () => {
   const isAuthed = getIsAuthed();
@@ -36,13 +36,13 @@ const DashboardPage = () => {
     );
   }
   console.log(currentUser);
-  const pendingIncomingFriendRequests = (
-    currentUser?.data?.friendRequests || []
+  const incomingFriendRequests = (
+    currentUser?.data?.friendRequests.received || []
   ).filter((request) => request?.status === 'pending');
   return (
     <>
       <DashboardHeader />
-      <div id={'dashboard'} className="h-full w-full bg-gray-50">
+      <div id={'dashboard'} className="h-screen w-full bg-gray-50">
         <div className="pb-32">
           <header className="border-neon-blue-700 border-y py-1">
             <div className="mx-auto flex max-w-7xl flex-row items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -118,10 +118,12 @@ const DashboardPage = () => {
               </div>
             </div>
           </section>
-          <section className="pb-3">
-            <Friends
-              friends={currentUser?.data?.friends}
-              incomingFriendRequests={pendingIncomingFriendRequests}
+          <section className="grid grid-cols-1 justify-items-center pb-3 md:col-span-2">
+            <FriendsAccordion
+              receivedFriendRequests={
+                currentUser?.data?.friendRequests.received!
+              }
+              sentFriendRequests={currentUser?.data?.friendRequests.sent!}
             />
           </section>
         </main>

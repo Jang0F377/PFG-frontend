@@ -4,33 +4,37 @@ import { ApiResponse } from '@common/utils/http/types';
 import { useMutation } from '@tanstack/react-query';
 import { type AxiosError } from 'axios';
 
-interface AnswerFriendRequest {
+interface AnswerFriendRequestProps {
   friendRequestId: string;
-  decision: 'accept' | 'decline';
-  userId: string;
-  friendId: string;
-  friendEmail: string;
+  answer: 'accept' | 'decline';
+}
+
+interface AnswerFriendRequestBody {
+  answer: 'accept' | 'decline';
 }
 
 export interface AnswerFriendRequestResponse {
   id: string;
-  userId: string;
-  userEmail: string;
-  friendId: string;
-  friendEmail: string;
+  recipientId: string;
+  recipientEmail: string;
+  requesterId: string;
+  requesterEmail: string;
   createdAt: string;
+  updatedAt?: string;
+  status: 'pending' | 'accepted' | 'declined';
 }
 
 export type AnswerFriendRequestResponseData =
   ApiResponse<AnswerFriendRequestResponse>;
 
-export const answerFriendRequest = async (data: AnswerFriendRequest) => {
-  return http.post<AnswerFriendRequestResponseData, AnswerFriendRequest>(
+export const answerFriendRequest = async (data: AnswerFriendRequestProps) => {
+  return http.post<AnswerFriendRequestResponseData, AnswerFriendRequestBody>(
     AppApiUrls.answerFriendRequest.get({
       friendRequestId: data.friendRequestId,
-      decision: data.decision,
     }),
-    data,
+    {
+      answer: data.answer,
+    },
     {
       snakecaseData: true,
       camelcaseResponse: true,
@@ -42,7 +46,7 @@ export const useApiAnswerFriendRequest = () => {
   return useMutation<
     AnswerFriendRequestResponseData,
     AxiosError,
-    AnswerFriendRequest
+    AnswerFriendRequestProps
   >({
     mutationFn: answerFriendRequest,
   });

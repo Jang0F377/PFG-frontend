@@ -36,9 +36,9 @@ export interface CreatedSesh {
 export interface Friend {
   id: string;
   userId: string;
+  userEmail: string;
   friendId: string;
-  email: string;
-  username?: string;
+  friendEmail: string;
   status: 'active' | 'blocked';
   createdAt: string;
 }
