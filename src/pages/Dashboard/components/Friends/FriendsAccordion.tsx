@@ -21,7 +21,7 @@ const FriendsAccordion = ({
     <Disclosure
       as="div"
       className="bg-neon-blue-200 mx-auto w-full max-w-2xl rounded p-1"
-      defaultOpen={true}
+      defaultOpen={false}
     >
       <DisclosureButton className="flex w-full items-center justify-between">
         <span className="text-neon-blue-900 text-md font-medium">Friends</span>

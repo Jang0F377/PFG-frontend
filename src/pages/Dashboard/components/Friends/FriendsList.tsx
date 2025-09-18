@@ -37,7 +37,9 @@ const FriendsList: FC<FriendsListProps> = ({
 
   return (
     <div className="basis-1/3 rounded-lg border border-slate-200 bg-white/80 backdrop-blur dark:border-slate-700 dark:bg-slate-900/40">
-      <h2 className="text-neon-blue-900 text-md p-1 underline">Friends</h2>
+      <h2 className="text-neon-blue-900 text-md border-neon-blue-800 border-y p-1">
+        Friends
+      </h2>
 
       <ul className="divide-y-2 divide-slate-100">
         {friends.map((friend) => (

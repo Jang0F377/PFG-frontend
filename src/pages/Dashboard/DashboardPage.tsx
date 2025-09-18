@@ -57,7 +57,7 @@ const DashboardPage = () => {
           </header>
         </div>
 
-        <main className="mx-3 -mt-32 grid grid-cols-1 items-stretch gap-6 pt-3 md:grid-cols-2">
+        <main className="mx-3 -mt-32 grid grid-cols-1 items-stretch gap-6 pt-3 md:mx-auto md:max-w-7xl md:grid-cols-2">
           <section className="h-full w-full">
             <div className="bg-neon-blue-200 mx-auto items-center justify-center rounded-lg px-2 py-3 text-center">
               <h1 className="-mt-2 text-left text-xl font-medium">

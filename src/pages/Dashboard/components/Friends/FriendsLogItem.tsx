@@ -10,15 +10,15 @@ const FriendsLogItem: FC<FriendsLogItemProps> = ({ friendRequest, type }) => {
   const formatMessage = (): string => {
     if (friendRequest.status === 'pending') {
       return type === 'incoming'
-        ? `${friendRequest.recipientEmail} sent you a friend request`
+        ? `${friendRequest.requesterEmail} sent you a friend request`
         : `You sent a friend request to ${friendRequest.recipientEmail}`;
     } else if (friendRequest.status === 'accepted') {
       return type === 'incoming'
-        ? `${friendRequest.recipientEmail} accepted your friend request`
+        ? `${friendRequest.requesterEmail} accepted your friend request`
         : `You accepted a friend request from ${friendRequest.recipientEmail}`;
     } else if (friendRequest.status === 'declined') {
       return type === 'incoming'
-        ? `${friendRequest.recipientEmail} declined your friend request`
+        ? `${friendRequest.requesterEmail} declined your friend request`
         : `You declined a friend request from ${friendRequest.recipientEmail}`;
     }
 
