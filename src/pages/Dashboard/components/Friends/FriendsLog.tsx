@@ -22,6 +22,7 @@ const FriendsLog: FC<FriendsLogProps> = ({
             key={friendRequest.id}
             friendRequest={friendRequest}
             type="incoming"
+            clickable={friendRequest.status === 'pending'}
           />
         ))}
         {outgoingFriendRequests.map((friendRequest) => (

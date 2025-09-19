@@ -36,9 +36,6 @@ const DashboardPage = () => {
     );
   }
   console.log(currentUser);
-  const incomingFriendRequests = (
-    currentUser?.data?.friendRequests.received || []
-  ).filter((request) => request?.status === 'pending');
   return (
     <>
       <DashboardHeader />
