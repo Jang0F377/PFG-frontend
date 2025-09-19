@@ -11,7 +11,7 @@ export interface FriendListItemProps {
 
 const FriendListItem: FC<FriendListItemProps> = ({ friend }) => {
   return (
-    <li className="text-neon-blue-900 hover:text-neon-blue-50 items-center rounded-md p-3 transition hover:bg-slate-800/50 sm:p-4">
+    <li className="text-neon-blue-900 hover:text-neon-blue-50 items-center p-3 transition hover:bg-slate-800/50 sm:p-4">
       <div className="text-center">
         <p className="text-md font-medium">{friend.email}</p>
       </div>
